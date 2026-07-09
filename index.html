@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panes of Heat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page-shell">
+  <nav class="side-nav" aria-label="Contents">
+    <ul class="nav-list">
+      <li><a href="#view-findings" data-view="findings" class="nav-item nav-link active">Data Findings</a></li>
+      <li><a href="#view-physicalisation" data-view="physicalisation" class="nav-item nav-link">Data Physicalisation</a></li>
+      <li><a href="#view-fetching" data-view="fetching" class="nav-item nav-link">Data Fetching</a></li>
+    </ul>
+  </nav>
+
+  <div class="container with-nav">
+    <header class="hero-header">
+      <svg class="hero-svg" viewBox="0 -20 1000 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Panes of heat — brown silhouette city skyline with lavender-and-warm window panes, and a clock of heat tiles on the right">
+        <defs>
+          <!-- Subtle hand-drawn wobble filter for building edges -->
+          <filter id="handDrawn" x="-2%" y="-2%" width="104%" height="104%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="4" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.3"/>
+          </filter>
+          <!-- Building fill gradients: lighter top, richer/darker base -->
+          <linearGradient id="bldDark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"   stop-color="#6E4536"/>
+            <stop offset="1"   stop-color="#4A2A20"/>
+          </linearGradient>
+          <linearGradient id="bldLight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"   stop-color="#8E6B5A"/>
+            <stop offset="1"   stop-color="#6A4636"/>
+          </linearGradient>
+          <!-- Soft ground shadow -->
+          <radialGradient id="groundGlow" cx="0.5" cy="0" r="0.6">
+            <stop offset="0" stop-color="#3A241B" stop-opacity="0.28"/>
+            <stop offset="1" stop-color="#3A241B" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Window pane sheen: subtle glossy overlay on each tile -->
+          <linearGradient id="paneSheen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.28"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+          <!-- clipPaths per building for masked window tiles -->
+          <clipPath id="clipA"><rect x="60"  y="90"  width="52" height="230"/></clipPath>
+          <clipPath id="clipB"><rect x="120" y="140" width="42" height="180"/></clipPath>
+          <clipPath id="clipC"><rect x="170" y="70"  width="60" height="250"/></clipPath>
+          <clipPath id="clipD"><rect x="238" y="160" width="36" height="160"/></clipPath>
+          <clipPath id="clipE"><rect x="282" y="110" width="48" height="210"/></clipPath>
+          <clipPath id="clipF"><rect x="338" y="180" width="38" height="140"/></clipPath>
+          <clipPath id="clipG"><rect x="384" y="130" width="52" height="190"/></clipPath>
+          <clipPath id="clipH"><rect x="444" y="60"  width="46" height="260"/></clipPath>
+          <clipPath id="clipI"><rect x="498" y="175" width="40" height="145"/></clipPath>
+          <clipPath id="clipJ"><rect x="546" y="105" width="56" height="215"/></clipPath>
+          <clipPath id="clipK"><rect x="610" y="155" width="42" height="165"/></clipPath>
+          <clipPath id="clipL"><rect x="660" y="85"  width="50" height="235"/></clipPath>
+          <clipPath id="clipM"><rect x="720" y="140" width="40" height="180"/></clipPath>
+          <clipPath id="clipN"><rect x="770" y="100" width="46" height="220"/></clipPath>
+          <clipPath id="clipO"><rect x="826" y="170" width="34" height="150"/></clipPath>
+          <!-- P: wider low-rise "regular" building (not a skyscraper) -->
+          <clipPath id="clipP"><rect x="870" y="230" width="90" height="90"/></clipPath>
+        </defs>
+
+        <!-- Soft ground shadow beneath the skyline -->
+        <ellipse cx="380" cy="322" rx="360" ry="10" fill="url(#groundGlow)"/>
+
+        <!-- ==== CLOCK — small "sun" behind the buildings, floating high ==== -->
+        <g id="rvClock" transform="translate(850 32)">
+          <g id="rvClockTiles"></g>
+          <line id="rvClockHour"   x1="0" y1="0" x2="0" y2="-22" stroke="#3A241B" stroke-width="1.8" stroke-linecap="round" transform="rotate(0)"/>
+          <line id="rvClockMinute" x1="0" y1="0" x2="0" y2="-32" stroke="#3A241B" stroke-width="1.3" stroke-linecap="round" transform="rotate(180)"/>
+          <circle cx="0" cy="0" r="2.6" fill="#3A241B" stroke="none"/>
+        </g>
+
+        <!-- ==== SKYLINE — 15 skyscrapers of varying heights ==== -->
+        <g id="rvBuildings" stroke="#3A241B" stroke-width="1" stroke-linejoin="round" filter="url(#handDrawn)">
+          <!-- A -->
+          <rect x="60"  y="90"  width="52" height="230" fill="url(#bldDark)"/>
+          <rect x="82"  y="76"  width="4"  height="16"  fill="#3A241B" stroke="none"/><!-- antenna -->
+          <rect x="60"  y="90"  width="52" height="6"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipA)" data-windows="1" data-x0="60"  data-y0="90"  data-x1="112" data-y1="320" data-warmth="0.6"></g>
+
+          <!-- B -->
+          <rect x="120" y="140" width="42" height="180" fill="url(#bldLight)"/>
+          <rect x="120" y="140" width="42" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipB)" data-windows="1" data-x0="120" data-y0="140" data-x1="162" data-y1="320" data-warmth="0.5"></g>
+
+          <!-- C -->
+          <rect x="170" y="70"  width="60" height="250" fill="url(#bldDark)"/>
+          <rect x="196" y="54"  width="4"  height="18"  fill="#3A241B" stroke="none"/>
+          <rect x="170" y="70"  width="60" height="6"   fill="#3A241B" stroke="none"/>
+          <rect x="180" y="60"  width="40" height="12"  fill="url(#bldDark)" stroke="none"/><!-- stepped roof -->
+          <g clip-path="url(#clipC)" data-windows="1" data-x0="170" data-y0="76"  data-x1="230" data-y1="320" data-warmth="0.75"></g>
+
+          <!-- D -->
+          <rect x="238" y="160" width="36" height="160" fill="url(#bldLight)"/>
+          <rect x="238" y="160" width="36" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipD)" data-windows="1" data-x0="238" data-y0="160" data-x1="274" data-y1="320" data-warmth="0.45"></g>
+
+          <!-- E -->
+          <rect x="282" y="110" width="48" height="210" fill="url(#bldDark)"/>
+          <rect x="304" y="96"  width="4"  height="16"  fill="#3A241B" stroke="none"/>
+          <rect x="282" y="110" width="48" height="6"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipE)" data-windows="1" data-x0="282" data-y0="110" data-x1="330" data-y1="320" data-warmth="0.7"></g>
+
+          <!-- F -->
+          <rect x="338" y="180" width="38" height="140" fill="url(#bldLight)"/>
+          <rect x="338" y="180" width="38" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipF)" data-windows="1" data-x0="338" data-y0="180" data-x1="376" data-y1="320" data-warmth="0.5"></g>
+
+          <!-- G -->
+          <rect x="384" y="130" width="52" height="190" fill="url(#bldDark)"/>
+          <rect x="384" y="130" width="52" height="6"   fill="#3A241B" stroke="none"/>
+          <rect x="394" y="118" width="32" height="14"  fill="url(#bldDark)" stroke="none"/>
+          <g clip-path="url(#clipG)" data-windows="1" data-x0="384" data-y0="136" data-x1="436" data-y1="320" data-warmth="0.65"></g>
+
+          <!-- H (tallest, center-ish) -->
+          <rect x="444" y="60"  width="46" height="260" fill="url(#bldDark)"/>
+          <rect x="465" y="42"  width="4"  height="20"  fill="#3A241B" stroke="none"/>
+          <rect x="444" y="60"  width="46" height="6"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipH)" data-windows="1" data-x0="444" data-y0="60"  data-x1="490" data-y1="320" data-warmth="0.8"></g>
+
+          <!-- I -->
+          <rect x="498" y="175" width="40" height="145" fill="url(#bldLight)"/>
+          <rect x="498" y="175" width="40" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipI)" data-windows="1" data-x0="498" data-y0="175" data-x1="538" data-y1="320" data-warmth="0.5"></g>
+
+          <!-- J -->
+          <rect x="546" y="105" width="56" height="215" fill="url(#bldDark)"/>
+          <rect x="546" y="105" width="56" height="6"   fill="#3A241B" stroke="none"/>
+          <rect x="558" y="93"  width="32" height="14"  fill="url(#bldDark)" stroke="none"/>
+          <g clip-path="url(#clipJ)" data-windows="1" data-x0="546" data-y0="111" data-x1="602" data-y1="320" data-warmth="0.7"></g>
+
+          <!-- K -->
+          <rect x="610" y="155" width="42" height="165" fill="url(#bldLight)"/>
+          <rect x="610" y="155" width="42" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipK)" data-windows="1" data-x0="610" data-y0="155" data-x1="652" data-y1="320" data-warmth="0.55"></g>
+
+          <!-- L -->
+          <rect x="660" y="85"  width="50" height="235" fill="url(#bldDark)"/>
+          <rect x="683" y="70"  width="4"  height="16"  fill="#3A241B" stroke="none"/>
+          <rect x="660" y="85"  width="50" height="6"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipL)" data-windows="1" data-x0="660" data-y0="85"  data-x1="710" data-y1="320" data-warmth="0.72"></g>
+
+          <!-- M -->
+          <rect x="720" y="140" width="40" height="180" fill="url(#bldLight)"/>
+          <rect x="720" y="140" width="40" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipM)" data-windows="1" data-x0="720" data-y0="140" data-x1="760" data-y1="320" data-warmth="0.55"></g>
+
+          <!-- N -->
+          <rect x="770" y="100" width="46" height="220" fill="url(#bldDark)"/>
+          <rect x="791" y="86"  width="4"  height="16"  fill="#3A241B" stroke="none"/>
+          <rect x="770" y="100" width="46" height="6"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipN)" data-windows="1" data-x0="770" data-y0="100" data-x1="816" data-y1="320" data-warmth="0.68"></g>
+
+          <!-- O -->
+          <rect x="826" y="170" width="34" height="150" fill="url(#bldLight)"/>
+          <rect x="826" y="170" width="34" height="5"   fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipO)" data-windows="1" data-x0="826" data-y0="170" data-x1="860" data-y1="320" data-warmth="0.5"></g>
+
+          <!-- P: wider low-rise regular building (flat top, cornice, wider base) -->
+          <rect x="870" y="230" width="90" height="90"  fill="url(#bldLight)"/>
+          <!-- Cornice / roof band -->
+          <rect x="866" y="224" width="98" height="8"   fill="url(#bldDark)"/>
+          <!-- Base plinth -->
+          <rect x="868" y="315" width="94" height="5"   fill="url(#bldDark)" stroke="none"/>
+          <!-- Central doorway (small dark arch) -->
+          <rect x="910" y="300" width="10" height="20"  fill="#3A241B" stroke="none"/>
+          <g clip-path="url(#clipP)" data-windows="1" data-x0="870" data-y0="230" data-x1="960" data-y1="315" data-warmth="0.45"></g>
+        </g>
+
+        <!-- ==== GROUND LINE ==== -->
+        <rect x="30" y="320" width="940" height="3" fill="url(#bldDark)"/>
+
+        <script type="application/ecmascript"><![CDATA[
+          (function(){
+            // ---- Window pane palette (from reference: lavender base + warm tiles) ----
+            var LAV_BASE = '#c9c4e0';
+            var LAV_ALT  = '#d8d4ea';
+            var WARM = ['#f1c21b','#ff832b','#da1e28','#750e13'];
+            var LIGHTS_OFF = '#2a1a14';
+            function paneColor(warmProb){
+              // ~8% chance any pane is "lights off" regardless of warmth
+              if (Math.random() < 0.08) return LIGHTS_OFF;
+              if (Math.random() > warmProb) return Math.random() < 0.85 ? LAV_BASE : LAV_ALT;
+              var r = Math.random();
+              if (r < 0.4) return WARM[0];
+              if (r < 0.75) return WARM[1];
+              if (r < 0.95) return WARM[2];
+              return WARM[3];
+            }
+
+            // ---- Draw window tiles inside each building silhouette ----
+            // Fit a whole number of tile columns/rows into the building box, then
+            // CENTER the grid horizontally and vertically so no tile gets cut off
+            // and edge margins are equal on both sides.
+            var groups = document.querySelectorAll('#rvBuildings [data-windows]');
+            groups.forEach(function(gEl){
+              var x0 = +gEl.dataset.x0, y0 = +gEl.dataset.y0;
+              var x1 = +gEl.dataset.x1, y1 = +gEl.dataset.y1;
+              var warmth = +gEl.dataset.warmth;
+              var tileW = 5, tileH = 7, gap = 4;
+              // Inner padding from silhouette edges (accounts for roof stripe & outline)
+              var padX = 6, padTop = 12, padBot = 8;
+              var innerW = (x1 - x0) - padX * 2;
+              var innerH = (y1 - y0) - padTop - padBot;
+              // How many whole tiles fit?
+              var cols = Math.max(1, Math.floor((innerW + gap) / (tileW + gap)));
+              var rows = Math.max(1, Math.floor((innerH + gap) / (tileH + gap)));
+              // Actual grid extent
+              var gridW = cols * tileW + (cols - 1) * gap;
+              var gridH = rows * tileH + (rows - 1) * gap;
+              // Center the grid within the inner area
+              var startX = x0 + padX + (innerW - gridW) / 2;
+              var startY = y0 + padTop + (innerH - gridH) / 2;
+              for (var r = 0; r < rows; r++) {
+                for (var c = 0; c < cols; c++) {
+                  var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+                  rect.setAttribute('x', (startX + c * (tileW + gap)).toFixed(1));
+                  rect.setAttribute('y', (startY + r * (tileH + gap)).toFixed(1));
+                  rect.setAttribute('width', tileW);
+                  rect.setAttribute('height', tileH);
+                  rect.setAttribute('rx', 0.6);
+                  rect.setAttribute('fill', paneColor(warmth));
+                  rect.setAttribute('stroke', 'none');
+                  rect.dataset.warmth = warmth;
+                  rect.style.transition = 'fill 0.6s ease';
+                  gEl.appendChild(rect);
+                }
+              }
+            });
+
+            // ---- Shimmer: recolor a fraction of panes on a fast-ish tick ----
+            var allPanes = document.querySelectorAll('#rvBuildings [data-windows] rect');
+            setInterval(function(){
+              var n = allPanes.length;
+              var count = Math.max(4, Math.floor(n * 0.06));
+              for (var i = 0; i < count; i++) {
+                var p = allPanes[Math.floor(Math.random() * n)];
+                var w = +p.dataset.warmth;
+                p.setAttribute('fill', paneColor(w));
+              }
+            }, 900);
+
+            // ---- 24 heat-tile ring around the clock ----
+            var g = document.getElementById('rvClockTiles');
+            if (!g) return;
+            // Ordered gradient tint: cool lavender at bottom, warming smoothly
+            // up through peach/yellow/orange to deepest maroon at top, then
+            // descending back through orange/yellow/peach to lavender.
+            // Same palette family as the buildings — just tinted, not split half/half.
+            var clockPalette = [
+              // 12 o'clock = index 0 (top, hottest)
+              '#750e13','#a72020','#da1e28','#e65a25',
+              '#ff832b','#f1a41b','#f1c21b','#f0d17a',
+              '#f0e0b8','#e6dcd8','#d8d4ea','#c9c4e0',
+              // 6 o'clock = coolest
+              '#b8b3d6','#c9c4e0','#d8d4ea','#e6dcd8',
+              '#f0e0b8','#f0d17a','#f1c21b','#f1a41b',
+              '#ff832b','#e65a25','#da1e28','#a72020'
+            ];
+            var R = 44, tW = 5, tH = 14;
+            for (var i = 0; i < 24; i++) {
+              var angle = (i / 24) * Math.PI * 2 - Math.PI/2;
+              var cx = Math.cos(angle) * R;
+              var cy = Math.sin(angle) * R;
+              var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+              rect.setAttribute('x', (cx - tW/2).toFixed(2));
+              rect.setAttribute('y', (cy - tH/2).toFixed(2));
+              rect.setAttribute('width', tW);
+              rect.setAttribute('height', tH);
+              rect.setAttribute('rx', 2);
+              rect.setAttribute('fill', clockPalette[i]);
+              rect.setAttribute('transform', 'rotate(' + ((i/24)*360) + ' ' + cx.toFixed(2) + ' ' + cy.toFixed(2) + ')');
+              g.appendChild(rect);
+            }
+
+            // ---- Independent header clock tick (12:30, 1:30, 2:30, ...) ----
+            var hh = document.getElementById('rvClockHour');
+            var mm = document.getElementById('rvClockMinute');
+            if (mm) mm.setAttribute('transform', 'rotate(' + (30 * 6) + ')');
+            var hour = 12;
+            function drawHands(){
+              var hourAngle = ((hour % 12) * 30) + (30 * 0.5);
+              if (hh) hh.setAttribute('transform', 'rotate(' + hourAngle + ')');
+            }
+            drawHands();
+            setInterval(function(){ hour = (hour + 1) % 24; drawHands(); }, 1200);
+          })();
+        ]]></script>
+      </svg>
+
+      <h1 class="hero-title">Panes of Heat</h1>
+      <p class="hero-tagline">A window into hotter days and warmer nights across urban India.</p>
+      <p class="hero-byline">By Kashvi Bansal, Surbhi Bhatia&nbsp;&amp;&nbsp;Parth&nbsp;Bisen</p>
+      <p class="hero-credit">Created for <strong>Data, Otherwise</strong>, the tangible data exhibition on <span class="nowrap">climate and ecological change</span> at <strong>VizChitra&nbsp;2026</strong>.</p>
+    </header>
+
+    <section class="view active" id="view-findings" data-view="findings">
+      <section class="warming-section anchor-target" id="warming-anchor">
+        <p class="warming-lede" id="bodyStartAnchor">India's cities are getting hotter. Temperatures recorded on thermometers often do not capture how heat is experienced by the human body through the day and at night.</p>
+
+        <p class="warming-lede">The year 2024 was the hottest ever recorded, and 2025 followed close behind as the third warmest year on Earth since 1850, data from the World Meteorological Organization shows.<br><br>In fact, years since 2015 form the hottest decade on record, with temperatures remaining dangerously high. In the three-year period from 2023&ndash;2025, for the first time, the average global temperature crossed 1.5&nbsp;°C above pre-industrial levels &mdash; a key climate threshold scientists have long warned about.</p>
+        <div id="warmingChartWrap" class="warming-chart-wrap">
+          <h3 class="warming-chart-title">Globally, the year 2024 was the hottest on record, crossing the 1.5&nbsp;°C threshold</h3>
+          <p class="warming-chart-subtitle">Change in global temperatures since pre-industrial levels.</p>
+          <div class="warming-tooltip" id="warmingTooltip"></div>
+          <svg id="warmingChart" viewBox="0 0 900 420" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="warming-legend">
+            <span class="wl-item"><span class="wl-swatch" style="background: linear-gradient(90deg, #fff2b0, #fde047, #f59e0b, #c2410c);"></span>Hotter overall &rarr; deeper orange</span>
+            <span class="wl-item"><span class="wl-swatch wl-swatch-line"></span>1.5&nbsp;°C threshold</span>
+          </div>
+          <p class="apr-source-right">Source: ERA5</p>
+        </div>
+      </section>
+
+      <p class="story-para" id="thermoStartAnchor">India's heatwaves are becoming longer, hotter, and more dangerous. On 27 April 2026, all 50 of the world's hottest cities were in India, with average peak temperatures of 44.7&nbsp;°C. Yet the temperatures reported on a thermometer capture only part of the story. Heat stress depends not just on air temperature, but also on humidity, wind, and sunlight &mdash; meaning a recorded temperature of 40&nbsp;°C can feel closer to 48&ndash;52&nbsp;°C on the human body. The effects ripple through everyday life: outdoor work becomes unsafe, productivity falls, children miss school, hospital admissions rise, and hot nights prevent the body from recovering. With limited access to air conditioning and millions working outdoors, heat is not simply a weather event in India &mdash; it is an everyday public health and livelihood challenge.</p>
+
+      <p class="story-para">The Indian Meteorological Department officially declares a heatwave when the maximum temperature crosses 40&nbsp;°C in the plains, 37&nbsp;°C along the coast, or 30&nbsp;°C in the hills, and is at least 4.5&nbsp;°C above the seasonal normal. But the lived experience of heat-stress runs far ahead of these thresholds. Once humidity, low wind, and direct sun are factored in, what a body actually feels at 40&nbsp;°C can sit closer to 48&ndash;52&nbsp;°C on the UTCI &ldquo;felt&rdquo; scale &mdash; the point at which the body can no longer shed heat fast enough to keep its core temperature stable.</p>
+
+      <div class="utci-box">
+        <div class="utci-box-eyebrow">What is UTCI?</div>
+        <div class="utci-box-title">Universal Thermal Climate Index &mdash; how heat actually lands on the body</div>
+        <p class="utci-box-body">The Universal Thermal Climate Index (UTCI) is a &ldquo;felt&rdquo; temperature. It combines <strong>air temperature</strong>, <strong>humidity</strong>, <strong>wind</strong>, and <strong>solar radiation</strong> into a single number that reflects what a person outdoors actually experiences. The thermometer measures the air; the UTCI measures the load on the body. Above 32&nbsp;°C the body is already in strong heat stress; above 46&nbsp;°C the body cannot keep its core temperature stable.</p>
+        <div class="utci-scale" aria-label="UTCI heat-stress bands">
+          <div class="utci-band b1"><div class="band-range">9 – 26 °C</div><div class="band-name">No thermal stress</div></div>
+          <div class="utci-band b2"><div class="band-range">26 – 32 °C</div><div class="band-name">Moderate heat stress</div></div>
+          <div class="utci-band b3"><div class="band-range">32 – 38 °C</div><div class="band-name">Strong heat stress</div></div>
+          <div class="utci-band b4"><div class="band-range">38 – 46 °C</div><div class="band-name">Very strong heat stress</div></div>
+          <div class="utci-band b5"><div class="band-range">&gt; 46 °C</div><div class="band-name">Extreme heat stress</div></div>
+        </div>
+      </div>
+
+      <section class="panes-section anchor-target" id="panes-anchor">
+        <h3 class="panes-title">How actual and felt temperature varies across the day</h3>
+        <p class="panes-subtitle">Daily actual (T2M) and feels-like (UTCI) temperatures across four Indian metros in 2024. Each vertical dumbbell connects the day's actual temperature to its felt temperature; watch the clock tick through the hours and all four cities update together.</p>
+
+        <div class="panes-controls">
+          <button class="play-btn" id="playBtn">Pause</button>
+          <div class="clock-block">
+            <div class="clock-digital" id="clockDigital">12:30 <span class="ampm">PM</span></div>
+          </div>
+        </div>
+
+        <div class="panes-legend">
+          <span class="dot actual" aria-hidden="true"></span>
+          <span class="label actual">Actual (T2M)</span>
+          <span class="dot felt" aria-hidden="true"></span>
+          <span class="label felt">Feels-like (UTCI) &middot; hotter than actual</span>
+          <span class="dot felt-cool" aria-hidden="true"></span>
+          <span class="muted">Feels-like &middot; cooler than actual</span>
+          <span class="sep"></span>
+          <span class="ref-sw very" aria-hidden="true"></span>
+          <span class="muted">Very strong heat &middot; 40°C</span>
+          <span class="ref-sw" aria-hidden="true"></span>
+          <span class="muted">Extreme heat &middot; 46°C</span>
+        </div>
+
+        <div class="panes-grid" id="panesGrid">
+          <div class="pane-card"><div class="pane-card-title">Delhi</div><svg class="pane-svg" data-city="delhi" viewBox="0 0 520 320" preserveAspectRatio="xMidYMid meet"></svg></div>
+          <div class="pane-card"><div class="pane-card-title">Kolkata</div><svg class="pane-svg" data-city="kolkata" viewBox="0 0 520 320" preserveAspectRatio="xMidYMid meet"></svg></div>
+          <div class="pane-card"><div class="pane-card-title">Mumbai</div><svg class="pane-svg" data-city="mumbai" viewBox="0 0 520 320" preserveAspectRatio="xMidYMid meet"></svg></div>
+          <div class="pane-card"><div class="pane-card-title">Chennai</div><svg class="pane-svg" data-city="chennai" viewBox="0 0 520 320" preserveAspectRatio="xMidYMid meet"></svg></div>
+        </div>
+      </section>
+
+
+      <section class="insight-section anchor-target" id="insight-1">
+        <div class="insight-header-row">
+          <div class="insight-header-left">
+            <h3 class="insight-title">Days are feeling hotter and nights are no longer a relief</h3>
+            <p class="insight-finding">Across all four cities, roughly a third of the year — or more — the nights stay hot enough that the body cannot recover.</p>
+            <p class="insight-subtitle">2024 calendar for each city. Coloured cells mark days when the temperature crossed the city's day cutoff (Delhi and Kolkata 40&nbsp;°C, Mumbai and Chennai 37&nbsp;°C). A blue dot in the corner marks a tropical night &mdash; on the Actual panel, this is a night when T2M stayed above 25&nbsp;°C; on the Feels-like panel, a night when UTCI stayed above 25&nbsp;°C. The deeper the blue, the warmer the night.</p>
+          </div>
+          <div class="city-toggle city-toggle-right" id="calCityToggle">
+            <button data-city="delhi" class="active">Delhi</button>
+            <button data-city="mumbai">Mumbai</button>
+            <button data-city="chennai">Chennai</button>
+            <button data-city="kolkata">Kolkata</button>
+          </div>
+        </div>
+        <div class="cal-grid-2">
+          <div class="cal-panel t2m">
+            <div class="cal-panel-title">Actual temperature (T2M)</div>
+            <div class="cal-stat-row">
+              <span class="cal-stat">
+                <span class="cal-stat-num t2m" id="calCountT2M">—</span>
+                <span class="cal-stat-lbl">severe days</span>
+              </span>
+              <span class="cal-stat-sep">|</span>
+              <span class="cal-stat">
+                <span class="cal-stat-num night" id="calCountT2MNight">—</span>
+                <span class="cal-stat-lbl">tropical nights</span>
+              </span>
+            </div>
+            <div class="cal-months" id="calMonthsT2M"></div>
+          </div>
+          <div class="cal-panel utci">
+            <div class="cal-panel-title">Feels-like temperature (UTCI)</div>
+            <div class="cal-stat-row">
+              <span class="cal-stat">
+                <span class="cal-stat-num utci" id="calCountUTCI">—</span>
+                <span class="cal-stat-lbl">severe days</span>
+              </span>
+              <span class="cal-stat-sep">|</span>
+              <span class="cal-stat">
+                <span class="cal-stat-num night" id="calCountUTCINight">—</span>
+                <span class="cal-stat-lbl">tropical nights</span>
+              </span>
+            </div>
+            <div class="cal-months" id="calMonthsUTCI"></div>
+          </div>
+        </div>
+        <div class="cal-legend">
+          <span><span class="swatch t2m-lo"></span>Actual above cutoff</span>
+          <span><span class="swatch t2m-mid"></span>+3° over cutoff</span>
+          <span><span class="swatch t2m-hi"></span>+6° over cutoff</span>
+          <span style="width: 14px; display: inline-block;"></span>
+          <span><span class="swatch utci-lo"></span>Felt above cutoff</span>
+          <span><span class="swatch utci-mid"></span>+3° over cutoff</span>
+          <span><span class="swatch utci-hi"></span>+6° over cutoff</span>
+          <span style="width: 14px; display: inline-block;"></span>
+          <span><span class="swatch night-lo"></span>Tropical night &gt; 25°</span>
+          <span><span class="swatch night-mid"></span>&gt; 27°</span>
+          <span><span class="swatch night-hi"></span>&gt; 29°</span>
+        </div>
+      </section>
+
+      <section class="insight-section anchor-target" id="insight-2">
+        <h3 class="insight-title">The heat stretches on &mdash; the comfort window for being outdoors is closing</h3>
+        <p class="insight-subtitle">Each clock face is 12 hours. The <em>inner ring</em> (yellow) marks the hours where the <em>actual</em> temperature crossed the city's cutoff on more than 30 days of 2024; the <em>outer ring</em> (orange) marks the same threshold on the <em>felt</em> (UTCI) scale. Delhi and Kolkata use 40&nbsp;°C during the day and 30&nbsp;°C at night; Mumbai and Chennai use 37&nbsp;°C and 30&nbsp;°C. Toggle between the morning face (12 AM &ndash; 12 PM) and the evening face (12 PM &ndash; 12 AM).</p>
+        <div class="clock-halfday-toggle" id="clockHalfdayToggle">
+          <button data-half="am" class="active">Morning</button>
+          <button data-half="pm">Evening</button>
+        </div>
+        <div class="clocks-supertitle">Number of hours too hot to step out</div>
+        <div class="clocks-grid" id="clocksHeatStretch"></div>
+      </section>
+
+      <section class="insight-section anchor-target" id="insight-windows">
+        <h3 class="insight-title">Windows of comfort are shrinking as heat spills further into mornings and nights</h3>
+        <p class="insight-subtitle">Each window in a tower is one day of 2024. The clock ticks through 24 hours &mdash; every window updates to show how hot it was, at that hour, on that day. On the left, the <em>actual</em> temperature (T2M). On the right, the <em>felt</em> temperature (UTCI). Below the city's cutoff, the window sits cool and blue; above it, the window lights up yellow &rarr; orange &rarr; red &rarr; deep red as the load on the body climbs.</p>
+
+        <div class="wcom-controls">
+          <div class="wcom-controls-left">
+            <button class="play-btn" id="wcomPlayBtn">Pause</button>
+          </div>
+          <div class="wcom-controls-right">
+            <div class="wcom-clock-block">
+              <div class="wcom-clock-digital" id="wcomClockDigital">01:30 <span class="ampm">PM</span></div>
+            </div>
+            <div class="wcom-city-toggle" id="wcomCityToggle">
+              <button data-city="delhi" class="active">Delhi</button>
+              <button data-city="mumbai">Mumbai</button>
+              <button data-city="chennai">Chennai</button>
+              <button data-city="kolkata">Kolkata</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wcom-panel">
+          <div class="wcom-buildings">
+            <div class="wcom-col">
+              <div class="wcom-topcap left">
+                <div class="wcom-topcap-title">Recorded heat</div>
+                <div class="wcom-topcap-count"><span class="cap-num" id="wcomCountLeft">0</span> <span class="cap-suffix">days at this hour</span></div>
+              </div>
+              <div class="wcom-building" id="wcomBuildingLeft"></div>
+            </div>
+            <div class="wcom-col right">
+              <div class="wcom-topcap right">
+                <div class="wcom-topcap-title">Felt heat</div>
+                <div class="wcom-topcap-count"><span class="cap-num" id="wcomCountRight">0</span> <span class="cap-suffix">days at this hour</span></div>
+              </div>
+              <div class="wcom-building" id="wcomBuildingRight"></div>
+
+              <!-- Magnifier callout: two arrows from a section of the tower out to a circular photo -->
+              <div class="wcom-magnifier" aria-hidden="true">
+                <svg class="mag-arrows" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <!-- Straight lines from tower pane region ONTO the circle's left arc.
+                       Circle: center (230, 50), radius 90. Endpoints picked so they lie
+                       exactly on the circle: (168, -15) top-left arc, (168, 115) bottom-left arc. -->
+                  <line x1="30" y1="105" x2="168" y2="-15" stroke="#3A241B" stroke-width="1.4"/>
+                  <line x1="30" y1="145" x2="168" y2="115" stroke="#3A241B" stroke-width="1.4"/>
+                </svg>
+                <div class="mag-circle">
+                  <img src="assets/tower-photo.png" alt="Close-up of illuminated windows on the exhibit tower with tiny stick-figure silhouettes">
+                </div>
+                <div class="mag-caption">Kashvi added the people silhouettes</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Full-width white section panel: main photo + clickable thumbnail windows -->
+      <div class="exhibit-panel" aria-label="Panes of Heat exhibition photo">
+        <div class="exhibit-panel-inner">
+          <img id="exhibitMainImage" class="exhibit-panel-image" src="assets/exhibit-hero.jpg" alt="Panes of Heat installation with towers of illuminated windows at the Data, Otherwise exhibition">
+          <div class="exhibit-carousel">
+            <button class="carousel-arrow" id="exhibitPrev" aria-label="Previous photo">
+              <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M12 4 L6 10 L12 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="exhibit-thumbs-viewport">
+              <div class="exhibit-thumbs" id="exhibitThumbs" role="tablist" aria-label="Choose exhibition photo">
+                <button class="exhibit-thumb active" data-src="assets/exhibit-hero.jpg" aria-label="Exhibition photo 1">
+                  <img src="assets/exhibit-hero.jpg" alt="">
+                </button>
+                <button class="exhibit-thumb" data-src="assets/exhibit-2.jpg" aria-label="Exhibition photo 2">
+                  <img src="assets/exhibit-2.jpg" alt="">
+                </button>
+                <button class="exhibit-thumb" data-src="assets/exhibit-3.jpg" aria-label="Exhibition photo 3">
+                  <img src="assets/exhibit-3.jpg" alt="">
+                </button>
+                <button class="exhibit-thumb" data-src="assets/exhibit-4.jpg" aria-label="Exhibition photo 4">
+                  <img src="assets/exhibit-4.jpg" alt="">
+                </button>
+                <button class="exhibit-thumb placeholder" data-src="" aria-label="Exhibition photo 5 (coming soon)" disabled>
+                  <span class="placeholder-label">5</span>
+                </button>
+              </div>
+            </div>
+            <button class="carousel-arrow" id="exhibitNext" aria-label="Next photo">
+              <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 4 L14 10 L8 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <section class="physicalisation-section anchor-target" id="view-physicalisation">
+        <div class="phys-eyebrow">Data Physicalisation</div>
+        <h3 class="phys-h2">How we brought this exhibit to life</h3>
+
+        <div class="phys-step">
+          <div class="phys-step-num">1</div>
+          <div class="phys-step-body">
+            <h4 class="phys-step-title">We started with sketches on paper</h4>
+            <p class="phys-step-text">Before touching any material, we drew the year of heat by hand — testing how a calendar of days, a clock of hours, and a tower of windows could each become a physical object you can walk up to and read at a glance.</p>
+            <div class="phys-gallery">
+              <div class="phys-thumbs" data-target="phys-view-1">
+                <button class="phys-thumb active" data-src="images/phys/step1-1.jpg" aria-label="Sketch 1"></button>
+                <button class="phys-thumb" data-src="images/phys/step1-2.jpg" aria-label="Sketch 2"></button>
+                <button class="phys-thumb" data-src="images/phys/step1-3.jpg" aria-label="Sketch 3"></button>
+                <button class="phys-thumb" data-src="images/phys/step1-4.jpg" aria-label="Sketch 4"></button>
+                <button class="phys-thumb" data-src="images/phys/step1-5.jpg" aria-label="Sketch 5"></button>
+                <button class="phys-thumb" data-src="images/phys/step1-6.jpg" aria-label="Sketch 6"></button>
+              </div>
+              <div class="phys-view" id="phys-view-1">
+                <div class="phys-view-empty">Click a thumbnail to view</div>
+                <button class="phys-arrow prev" data-dir="-1" aria-label="Previous image">&#8249;</button>
+                <button class="phys-arrow next" data-dir="1" aria-label="Next image">&#8250;</button>
+                <div class="phys-counter"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phys-step">
+          <div class="phys-step-num">2</div>
+          <div class="phys-step-body">
+            <h4 class="phys-step-title">And then we went window shopping</h4>
+            <p class="phys-step-text">Each &ldquo;window&rdquo; on the tower needed to be small, uniform, and visibly warm when the day was hot. We visited hardware shops and studios to find materials that could hold a colour, catch a light, and stack tightly across 365 days.</p>
+            <div class="phys-materials">
+              <div class="phys-materials-title">Materials we tried</div>
+              <ul class="phys-materials-list">
+                <li><span class="phys-mat-name">Acrylic sheets</span> <span class="phys-mat-note">2&nbsp;mm frosted &middot; laser-cut into 12×12 mm tiles</span></li>
+                <li><span class="phys-mat-name">MDF board</span> <span class="phys-mat-note">6&nbsp;mm &middot; as the base of each tower</span></li>
+                <li><span class="phys-mat-name">Coloured vellum</span> <span class="phys-mat-note">amber &rarr; red &rarr; deep red gradient set</span></li>
+                <li><span class="phys-mat-name">LEDs (warm-white)</span> <span class="phys-mat-note">back-lit test panels for the &ldquo;lit window&rdquo; effect</span></li>
+                <li><span class="phys-mat-name">Copper tape</span> <span class="phys-mat-note">for the circuit rails behind the LED grid</span></li>
+                <li><span class="phys-mat-name">Matte black paint</span> <span class="phys-mat-note">so unlit windows read as a night-time facade</span></li>
+                <li><span class="phys-mat-name">Cardstock (300&nbsp;gsm)</span> <span class="phys-mat-note">quick prototype tiles before we committed to acrylic</span></li>
+              </ul>
+            </div>
+            <div class="phys-gallery">
+              <div class="phys-thumbs" data-target="phys-view-2">
+                <button class="phys-thumb active" data-src="images/phys/step2-1.jpg" aria-label="Materials 1"></button>
+                <button class="phys-thumb" data-src="images/phys/step2-2.jpg" aria-label="Materials 2"></button>
+                <button class="phys-thumb" data-src="images/phys/step2-3.jpg" aria-label="Materials 3"></button>
+                <button class="phys-thumb" data-src="images/phys/step2-4.jpg" aria-label="Materials 4"></button>
+                <button class="phys-thumb" data-src="images/phys/step2-5.jpg" aria-label="Materials 5"></button>
+                <button class="phys-thumb" data-src="images/phys/step2-6.jpg" aria-label="Materials 6"></button>
+              </div>
+              <div class="phys-view" id="phys-view-2">
+                <div class="phys-view-empty">Click a thumbnail to view</div>
+                <button class="phys-arrow prev" data-dir="-1" aria-label="Previous image">&#8249;</button>
+                <button class="phys-arrow next" data-dir="1" aria-label="Next image">&#8250;</button>
+                <div class="phys-counter"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phys-step">
+          <div class="phys-step-num">3</div>
+          <div class="phys-step-body">
+            <h4 class="phys-step-title">And finally, we built it</h4>
+            <p class="phys-step-text">Every window lit up to the temperature it recorded. Together, the towers, calendar, and clocks form one object you can stand in front of and see the year of heat &mdash; hour by hour, day by day.</p>
+            <div class="phys-gallery">
+              <div class="phys-thumbs" data-target="phys-view-3">
+                <button class="phys-thumb active" data-src="images/phys/step3-1.jpg" aria-label="Build 1"></button>
+                <button class="phys-thumb" data-src="images/phys/step3-2.jpg" aria-label="Build 2"></button>
+                <button class="phys-thumb" data-src="images/phys/step3-3.jpg" aria-label="Build 3"></button>
+                <button class="phys-thumb" data-src="images/phys/step3-4.jpg" aria-label="Build 4"></button>
+                <button class="phys-thumb" data-src="images/phys/step3-5.jpg" aria-label="Build 5"></button>
+                <button class="phys-thumb" data-src="images/phys/step3-6.jpg" aria-label="Build 6"></button>
+              </div>
+              <div class="phys-view" id="phys-view-3">
+                <div class="phys-view-empty">Click a thumbnail to view</div>
+                <button class="phys-arrow prev" data-dir="-1" aria-label="Previous image">&#8249;</button>
+                <button class="phys-arrow next" data-dir="1" aria-label="Next image">&#8250;</button>
+                <div class="phys-counter"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="view-fetching" data-view="fetching" style="display: block; margin-top: 100px; padding-top: 60px; border-top: 1px solid #ececec;">
+      <h3 class="insight-title" style="font-size: 30px; margin-bottom: 8px;">Data Methodology</h3>
+      <p class="method-strap">Sources, thresholds, and how IST hours are computed from UTC samples</p>
+      <div class="methodology-block">
+        <h3>Definitions</h3>
+        <dl class="method-defs">
+          <dt>T2M &mdash; Actual temperature</dt>
+          <dd>The 2&nbsp;m air temperature recorded by ERA5 hourly reanalysis. This is what a thermometer reads in the shade. Referred to as &ldquo;actual&rdquo; or &ldquo;air&rdquo; temperature throughout.</dd>
+
+          <dt>UTCI &mdash; Feels-like temperature</dt>
+          <dd>The Universal Thermal Climate Index &mdash; an equivalent temperature on the &ldquo;felt&rdquo; scale that combines air temperature, humidity, wind, and direct solar radiation. UTCI is what the human body actually experiences; under high humidity and low wind, UTCI can sit 8&ndash;12&nbsp;°C above T2M.</dd>
+
+          <dt>Tropical night</dt>
+          <dd>A night during which the <strong>actual air temperature (T2M)</strong>, not the feels-like value, stays above the city-specific night threshold at any IST hour of the night window (7:30&nbsp;PM&ndash;7:30&nbsp;AM). Tropical-night counts are based on T2M because nighttime humidity / radiation effects are smaller, and the air temperature itself is the strongest determinant of disrupted sleep.</dd>
+
+          <dt>Time conversion</dt>
+          <dd>ERA5 publishes hourly values stamped in UTC. We re-interpret each sample as Indian Standard Time (IST&nbsp;=&nbsp;UTC&nbsp;+&nbsp;5:30) during computation. Because samples sit on the UTC hour, each sample lands on :30 past the corresponding IST hour.</dd>
+        </dl>
+
+        <h3>Day and night windows</h3>
+        <ul>
+          <li><strong>Day</strong>: 7:30&nbsp;AM &ndash; 7:30&nbsp;PM IST</li>
+          <li><strong>Night</strong>: 7:30&nbsp;PM &ndash; 7:30&nbsp;AM IST</li>
+        </ul>
+
+        <h3>Thresholds used for our analysis</h3>
+        <p>Thresholds vary by city because the Indian Meteorological Department (IMD) sets different daytime  heatwave thresholds for plains, coastal cities, elevated cities, and hill stations. Night thresholds are city-specific by climatology.</p>
+        <p><strong>Coastal vs landlocked</strong> &mdash; coastal cities (Mumbai, Chennai) are moderated by the sea breeze, so their air temperature rarely climbs as high as the inland plains, and the IMD sets a lower daytime heatwave cutoff of <strong>37&nbsp;°C</strong> for them. Landlocked plains cities (Delhi, Kolkata) sit far from the coast, heat up more sharply during the day, and use the standard plains cutoff of <strong>40&nbsp;°C</strong>. On the felt (UTCI) scale, though, coastal humidity often pushes the body's actual heat load above what the thermometer implies &mdash; which is why the two coastal towers in the buildings viz light up so much even at temperatures well below 40&nbsp;°C.</p>
+
+        <div class="method-table-wrap">
+          <table class="method-table">
+            <thead>
+              <tr>
+                <th>City</th>
+                <th>Terrain type</th>
+                <th>IMD daytime heatwave threshold</th>
+                <th>Tropical night threshold</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Delhi</td><td>Plains</td><td>40&nbsp;°C</td><td>26&nbsp;°C</td></tr>
+              <tr><td>Mumbai</td><td>Coastal</td><td>37&nbsp;°C</td><td>30&nbsp;°C</td></tr>
+              <tr><td>Chennai</td><td>Coastal</td><td>37&nbsp;°C</td><td>30&nbsp;°C</td></tr>
+              <tr><td>Kolkata</td><td>Plains</td><td>40&nbsp;°C</td><td>30&nbsp;°C</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Analysis matrix</h3>
+        <dl class="method-defs">
+          <dt>Unit</dt>
+          <dd>No. of days, no. of nights, no. of hours</dd>
+          <dt>Variables</dt>
+          <dd>Actual vs feels-like (T2M vs UTCI), tropical nights</dd>
+          <dt>Thresholds</dt>
+          <dd>Different for different cities (see table above)</dd>
+          <dt>Time</dt>
+          <dd>2000 vs 2024 &nbsp;|&nbsp; 2024 alone</dd>
+          <dt>Cities</dt>
+          <dd>Delhi, Mumbai, Chennai, Kolkata</dd>
+          <dt>Day definition</dt>
+          <dd>7:30&nbsp;AM &ndash; 7:30&nbsp;PM IST</dd>
+          <dt>Night definition</dt>
+          <dd>7:30&nbsp;PM &ndash; 7:30&nbsp;AM IST</dd>
+        </dl>
+
+        <h3>Sources</h3>
+        <p>ERA5 hourly T2M and derived UTCI from the Copernicus Climate Data Store.</p>
+
+        <h3>Data fetching &mdash; Thermal Trace endpoint contract</h3>
+        <p>Hourly T2M and UTCI values used in this story were pulled from the Copernicus Thermal Trace aggregated-timeseries endpoint. One request returns a time series for a single point (latitude/longitude) over the requested window and temporal aggregation.</p>
+
+        <pre class="method-code"><code>GET https://apps.climate.copernicus.eu/thermal-trace-server/aggregated-timeseries-new
+    ?x=&lt;longitude&gt;
+    &amp;y=&lt;latitude&gt;
+    &amp;temporal_agg=&lt;yearly|seasonal|monthly|hourly&gt;
+    &amp;r=0
+    &amp;variable=&lt;utci|t2m&gt;
+    &amp;start_time=&lt;YYYY-MM-DD&gt;
+    &amp;end_time=&lt;YYYY-MM-DD&gt;
+    &amp;apply_mask=false
+
+Headers:
+    Origin:  https://thermaltrace.climate.copernicus.eu
+    Referer: https://thermaltrace.climate.copernicus.eu/</code></pre>
+
+        <dl class="method-defs">
+          <dt><code>x</code>, <code>y</code></dt>
+          <dd>Longitude and latitude of the city sample point.</dd>
+          <dt><code>temporal_agg</code></dt>
+          <dd>Aggregation level. We request <code>hourly</code> for the calendar and diurnal charts; <code>monthly</code> for the monthly bar charts.</dd>
+          <dt><code>variable</code></dt>
+          <dd><code>t2m</code> for the actual 2&nbsp;m air temperature, <code>utci</code> for the derived feels-like value.</dd>
+          <dt><code>start_time</code>, <code>end_time</code></dt>
+          <dd>Inclusive date range. We pull each year separately and stitch on the client.</dd>
+          <dt><code>r</code>, <code>apply_mask</code></dt>
+          <dd><code>r=0</code> selects the point sample (no spatial radius); <code>apply_mask=false</code> keeps water and non-land cells.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- End credits -->
+    <section class="end-credits">
+      <p><strong>Curated by:</strong> Debanshu Bhaumik, Siddhartha Mukherjee</p>
+      <p><strong>Built with support from:</strong> Rachel, Kavi, Aditi, and Laser Smiths</p>
+      <p><strong>Our exhibit stood alongside:</strong> x, y, z</p>
+    </section>
+  </div>
+</div>
+
+<div id="tt" role="tooltip" aria-hidden="true"></div>
+
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
