@@ -550,6 +550,22 @@ window.__runWhenDataReady(function () {
     playBtn.textContent = state.playing ? 'Pause' : 'Play';
   });
 
+  // Mobile city selector — shows one dumbbell card at a time via CSS toggling
+  const panesCityToggle = document.getElementById('panesCityToggle');
+  if (panesCityToggle) {
+    const grid = document.getElementById('panesGrid');
+    function applyCity(city) {
+      grid.dataset.selectedCity = city;
+    }
+    applyCity('delhi');
+    panesCityToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-city]');
+      if (!btn) return;
+      panesCityToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      applyCity(btn.dataset.city);
+    });
+  }
+
   requestAnimationFrame(tick);
 });
 
@@ -656,6 +672,38 @@ window.__runWhenDataReady(function () {
     render(btn.dataset.city);
   });
   render('delhi');
+
+  // Mobile mode toggle — swap between Recorded (T2M) and Felt (UTCI) panels
+  const modeToggle = document.getElementById('calModeToggle');
+  const grid2 = document.querySelector('.cal-grid-2');
+  if (modeToggle && grid2) {
+    function setMode(mode) { grid2.dataset.calMode = mode; }
+    setMode('t2m');
+    modeToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-mode]');
+      if (!btn) return;
+      modeToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+      setMode(btn.dataset.mode);
+    });
+    // Swipe support
+    let startX = null;
+    grid2.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    grid2.addEventListener('touchend', (e) => {
+      if (startX === null) return;
+      const endX = (e.changedTouches[0] || {}).clientX;
+      if (typeof endX !== 'number') { startX = null; return; }
+      const dx = endX - startX;
+      if (Math.abs(dx) > 50) {
+        const next = dx < 0 ? 'utci' : 't2m';
+        setMode(next);
+        modeToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === next));
+      }
+      startX = null;
+    }, { passive: true });
+  }
 });
 
 /* ============ Insight 2 — dual-ring clocks (June average, Recorded vs Felt) ============ */

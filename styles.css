@@ -641,6 +641,9 @@
   .panes-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 30px 32px;
   }
+  /* Desktop: hide the mobile-only toggles */
+  .panes-city-toggle { display: none; }
+  .cal-mode-toggle { display: none; }
   @media (max-width: 900px) { .panes-grid { grid-template-columns: 1fr; } }
   .pane-card { display: flex; flex-direction: column; gap: 10px; }
   .pane-card-title {
@@ -1474,18 +1477,20 @@
     max-width: 54ch;
   }
   .phys-step {
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 24px;
+    display: block;
     padding: 30px 0;
     border-top: 1px solid #ececec;
   }
   .phys-step:first-of-type { border-top: none; }
   .phys-step-num {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 36px; font-weight: 400;
-    color: #c0382f; line-height: 1;
-    padding-top: 6px;
+    font-size: 22px;
+    font-weight: 500;
+    color: #c0382f;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+    padding-top: 0;
   }
   .phys-step-body { min-width: 0; }
   .phys-step-title {
@@ -2115,8 +2120,8 @@
     .physicalisation-section { margin-top: 60px; padding-top: 28px; }
     .phys-title { font-size: 34px; margin-bottom: 10px; }
     .phys-h2 { font-size: 22px; margin-bottom: 22px; }
-    .phys-step { grid-template-columns: 1fr; gap: 4px; padding: 22px 0; }
-    .phys-step-num { font-size: 24px; }
+    .phys-step { padding: 22px 0; }
+    .phys-step-num { font-size: 18px; }
     .phys-step-title { font-size: 18px; }
     .phys-step-text { font-size: 14px; }
     .phys-gallery { grid-template-columns: 1fr; gap: 14px; }
@@ -2140,16 +2145,283 @@
     .methodology-block p, .method-defs dd, .method-defs dt { font-size: 14px; }
   }
 
+  /* ============================================================
+     Phone-first layout (≤ 640px) — one column, tighter type,
+     stronger control targets, no horizontal overflow.
+     ============================================================ */
+  @media (max-width: 640px) {
+    html, body { overflow-x: hidden; }
+
+    /* ---- Hero — mobile-native ordering ----
+       Structure: TITLE first, then TAGLINE (immediately, so the phone user sees
+       what the story is before the illustration). Then a decorative SKYLINE
+       STRIP that crops the SVG to just the buildings band (viewBox 0 150 → 260),
+       used as a visual bookend. Then byline + credit. Text runs 14 px in from
+       the edges; the skyline strip bleeds edge-to-edge. */
+    .hero-header {
+      margin: 0 -2px 24px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Scale the skyline larger via a bleed wrapper — keeps the clock visible
+       because the SVG maintains its own aspect (viewBox preserveAspectRatio meet),
+       just rendered at a wider ~130% viewport width. */
+    .hero-header .hero-svg {
+      order: 4;
+      display: block;
+      width: 130%;
+      max-width: none;
+      height: auto;
+      margin: 14px -15% 4px;
+    }
+    .hero-header .hero-title    { order: 1; }
+    .hero-header .hero-tagline  { order: 2; }
+    .hero-header .hero-byline   { order: 3; }
+    .hero-header .hero-credit   { order: 5; }
+    .hero-header .hero-title,
+    .hero-header .hero-tagline,
+    .hero-header .hero-byline,
+    .hero-header .hero-credit {
+      margin-left: 14px;
+      margin-right: 14px;
+      max-width: none;
+    }
+    .hero-header .hero-title {
+      font-size: clamp(38px, 12vw, 52px);
+      line-height: 1;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+    .hero-header .hero-tagline {
+      font-size: 15.5px;
+      line-height: 1.4;
+      margin-bottom: 0;
+    }
+    .hero-header .hero-byline   { font-size: 13px; margin-top: 12px; }
+    .hero-header .hero-credit   {
+      font-size: 13px;
+      margin-top: 10px;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    /* ---- Container padding — minimal phone gutters ---- */
+    .page-shell { padding: 0 4px; }
+    .container.with-nav { padding: 12px 2px 60px; }
+
+    /* ---- Warming chart title/subtitle ---- */
+    .warming-chart-title {
+      white-space: normal;
+      font-size: 15px;
+    }
+    .warming-chart-subtitle { font-size: 13px; }
+
+    /* ---- Titles + subtitle-with-toggle should stack on phone ---- */
+    .title-with-toggle,
+    .subtitle-with-toggle {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .title-with-toggle .city-toggle,
+    .title-with-toggle .chart-controls-cluster,
+    .subtitle-with-toggle .city-toggle,
+    .subtitle-with-toggle .chart-controls-cluster {
+      margin-left: 0;
+    }
+    .chart-controls-cluster {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .insight-title, .panes-title { font-size: 19px; line-height: 1.2; }
+    .insight-subtitle, .panes-subtitle { font-size: 13.5px; line-height: 1.5; }
+    .panes-section .panes-subtitle { white-space: normal; }
+    .warming-chart-title { font-size: 14px; line-height: 1.3; }
+    .warming-chart-subtitle { font-size: 12.5px; }
+
+    /* ---- City-toggle buttons scale for tap targets ---- */
+    .city-toggle button, .wcom-city-toggle button {
+      font-size: 12px; padding: 8px 12px;
+    }
+    .play-btn { font-size: 12px; padding: 8px 16px; }
+
+    /* ---- Panes / dumbbells: show one city at a time via toggle ---- */
+    .panes-city-toggle { display: inline-flex; }
+    .panes-grid { grid-template-columns: 1fr; gap: 0; }
+    .panes-grid[data-selected-city] .pane-card { display: none; }
+    .panes-grid[data-selected-city="delhi"]   .pane-card:has(.pane-svg[data-city="delhi"])   { display: flex; flex-direction: column; }
+    .panes-grid[data-selected-city="kolkata"] .pane-card:has(.pane-svg[data-city="kolkata"]) { display: flex; flex-direction: column; }
+    .panes-grid[data-selected-city="mumbai"]  .pane-card:has(.pane-svg[data-city="mumbai"])  { display: flex; flex-direction: column; }
+    .panes-grid[data-selected-city="chennai"] .pane-card:has(.pane-svg[data-city="chennai"]) { display: flex; flex-direction: column; }
+    .pane-card-title { font-size: 18px; }
+    .pane-svg text { font-size: 20px !important; }
+    .panes-controls { flex-wrap: wrap; gap: 12px; }
+    .clock-block { flex: 1 1 auto; }
+
+    /* ---- UTCI cream card ---- */
+    .utci-box { padding: 20px 18px; }
+    .utci-box-title { font-size: 20px; }
+    .utci-meta { grid-template-columns: 1fr; row-gap: 4px; font-size: 13.5px; }
+    .utci-meta dt { padding-top: 8px; }
+    .utci-strip-bar { grid-template-columns: repeat(5, 1fr); }
+    .utci-band .ub-label { font-size: 9px; }
+    .utci-band .ub-range { font-size: 8px; }
+
+    /* ---- Thermal Trace figure ---- */
+    .thermal-figure figcaption { font-size: 12px; }
+
+    /* ---- Calendar on phone ----
+       One single card: months as columns across, days flowing top→bottom.
+       All 366 days visible without scrolling. */
+    .cal-mode-toggle { display: inline-flex; margin-bottom: 14px; }
+    .cal-panel-title { display: none; }
+    .cal-grid-2 {
+      grid-template-columns: 1fr;
+      gap: 0;
+      touch-action: pan-y;
+    }
+    .cal-grid-2 .cal-panel { display: none; }
+    .cal-grid-2[data-cal-mode="t2m"]  .cal-panel.t2m  { display: block; }
+    .cal-grid-2[data-cal-mode="utci"] .cal-panel.utci { display: block; }
+
+    /* Twelve months laid out as columns of days */
+    .cal-months {
+      display: flex;
+      gap: 3px;
+      align-items: flex-start;
+    }
+    .cal-month {
+      flex: 1 1 0;
+      padding: 0;
+      min-width: 0;
+    }
+    .cal-month-name {
+      font-size: 9px;
+      margin-bottom: 3px;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    /* Turn each month's 7-column DoW grid into a single vertical strip */
+    .cal-cells {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .cal-cell.placeholder { display: none; }
+    .cal-cell {
+      width: 100%;
+      aspect-ratio: auto;
+      height: 5px;
+      font-size: 0;
+      border-width: 0;
+      border-radius: 0;
+      background: #f0e6dd;
+    }
+    .cal-cell.hot { background: #ffd88a; }
+    .cal-cell.night::after {
+      width: 2.5px; height: 2.5px;
+      right: 0.5px; bottom: 0.5px;
+    }
+    .cal-stat-num { font-size: 22px; }
+    .cal-stat-lbl { font-size: 11px; }
+    .cal-stat-row { gap: 8px; margin-bottom: 12px; }
+
+    /* ---- Clocks: stack the two per city ---- */
+    .clocks-grid { flex-direction: column; align-items: center; gap: 24px; }
+    .clock-card { width: 100%; max-width: 260px; }
+    .clock-svg { max-width: 240px; }
+    .clocks-caption .caption-main { font-size: 13px; }
+    .clocks-caption .caption-sub { font-size: 11.5px; }
+
+    /* ---- Buildings viz — keep both towers side by side, controls compact ---- */
+    .wcom-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .wcom-controls-left {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .wcom-controls-right {
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wcom-clock-block { flex: 0 0 auto; }
+    .wcom-city-toggle {
+      flex: 1 1 auto;
+      max-width: 100%;
+    }
+    .wcom-city-toggle button {
+      font-size: 11px;
+      padding: 7px 10px;
+      flex: 1 1 auto;
+    }
+    .wcom-panel { grid-template-columns: 1fr; }
+    /* Force side-by-side on phone (overrides earlier stacking rules) */
+    .wcom-buildings {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 100%;
+    }
+    .wcom-col { width: 100%; align-items: center; }
+    .wcom-building {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      grid-auto-rows: 8px;
+      gap: 2px 3px;
+      padding: 6px;
+      width: 100%;
+      max-width: 150px;
+    }
+    .wcom-topcap-title { font-size: 11.5px; }
+    .wcom-topcap-count .cap-num { font-size: 18px; }
+    .wcom-topcap-count .cap-suffix { font-size: 10px; }
+
+    /* ---- Physicalisation stepper ---- */
+    .phys-title { font-size: 28px; }
+    .phys-step { padding: 20px 0; }
+    .phys-step-num { font-size: 16px; margin-bottom: 6px; }
+    .phys-step-title { font-size: 17px; }
+    .phys-step-text { font-size: 14px; }
+    /* Photos always come UNDER the text on phone (main image + thumbs stack below) */
+    .phys-gallery {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 12px;
+    }
+    .phys-thumbs { grid-template-columns: repeat(6, 1fr); }
+    .phys-thumbs { grid-template-columns: repeat(4, 1fr); }
+    .phys-view { min-height: 300px; }
+    .phys-duo-imgs { grid-template-columns: 1fr; }
+    .phys-feature { max-width: 100%; }
+    .phys-materials { padding: 18px; }
+
+    /* ---- Closing carousel — reduce card size, faster loop ---- */
+    .closing { max-width: 100%; margin: 60px auto 40px; }
+    .closing-track figure { width: 180px; height: 240px; }
+    .closing-track { gap: 12px; animation-duration: 42s; }
+    .closing-thanks { font-size: 16px; }
+    .closing-logo { max-width: 100px; margin-bottom: 28px; }
+    .closing-credits { font-size: 13px; line-height: 1.8; }
+
+    /* ---- Methodology card ---- */
+    .methodology-block { padding: 22px 20px; }
+    .methodology-block h3 { font-size: 15px; }
+    .methodology-block p { font-size: 13.5px; }
+    .method-code { font-size: 10.5px; }
+
+    /* ---- Story paragraphs ---- */
+    .warming-lede, .story-para { font-size: 15px; line-height: 1.7; }
+  }
+
   @media (max-width: 480px) {
     h1 { font-size: 26px; }
     .subtitle { font-size: 14px; }
-    .cal-months { grid-template-columns: 1fr; }
-    .clocks-grid { grid-template-columns: 1fr; }
     .clock-svg { max-width: 220px; }
-    .wcom-buildings { grid-template-columns: 1fr; gap: 22px; }
-    .wcom-building {
-      grid-template-columns: repeat(14, minmax(0, 1fr));
-      grid-auto-rows: 12px;
-    }
     .phys-materials-list li { padding: 6px 0; }
   }

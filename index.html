@@ -390,6 +390,12 @@
           <div class="clock-block">
             <div class="clock-digital" id="clockDigital">12:30<span class="ampm">PM</span></div>
           </div>
+          <div class="city-toggle panes-city-toggle" id="panesCityToggle">
+            <button data-city="delhi" class="active">Delhi</button>
+            <button data-city="mumbai">Mumbai</button>
+            <button data-city="chennai">Chennai</button>
+            <button data-city="kolkata">Kolkata</button>
+          </div>
         </div>
 
         <div class="panes-grid" id="panesGrid">
@@ -415,6 +421,11 @@
           </div>
         </div>
         <p class="insight-subtitle">Number of days where days felt hotter <span class="inline-swatch red" aria-hidden="true"></span> and nights warmer <span class="inline-swatch yellow" aria-hidden="true"></span></p>
+        <!-- Mobile-only: swipe/toggle between the two panels -->
+        <div class="city-toggle cal-mode-toggle" id="calModeToggle">
+          <button data-mode="t2m" class="active">Recorded</button>
+          <button data-mode="utci">Felt</button>
+        </div>
         <div class="cal-grid-2">
           <div class="cal-panel t2m">
             <div class="cal-panel-title">Recorded temperature</div>
@@ -548,20 +559,20 @@
                 <button class="exhibit-thumb active" data-src="assets/exhibit-hero.jpg" aria-label="Exhibition photo 1">
                   <img src="assets/exhibit-hero.jpg" alt="">
                 </button>
-                <button class="exhibit-thumb" data-src="assets/exhibit-2.jpg" aria-label="Exhibition photo 2">
-                  <img src="assets/exhibit-2.jpg" alt="">
+                <button class="exhibit-thumb" data-src="assets/panes-sign.jpg" aria-label="Exhibition photo 2">
+                  <img src="assets/panes-sign.jpg" alt="">
                 </button>
-                <button class="exhibit-thumb" data-src="assets/exhibit-3.jpg" aria-label="Exhibition photo 3">
-                  <img src="assets/exhibit-3.jpg" alt="">
-                </button>
-                <button class="exhibit-thumb" data-src="assets/exhibit-4.jpg" aria-label="Exhibition photo 4">
-                  <img src="assets/exhibit-4.jpg" alt="">
-                </button>
-                <button class="exhibit-thumb" data-src="assets/panes-more.jpg" aria-label="Exhibition photo 5">
+                <button class="exhibit-thumb" data-src="assets/panes-more.jpg" aria-label="Exhibition photo 3">
                   <img src="assets/panes-more.jpg" alt="">
                 </button>
-                <button class="exhibit-thumb" data-src="assets/panes-sign.jpg" aria-label="Exhibition photo 6">
-                  <img src="assets/panes-sign.jpg" alt="">
+                <button class="exhibit-thumb" data-src="assets/exhibit-2.jpg" aria-label="Exhibition photo 4">
+                  <img src="assets/exhibit-2.jpg" alt="">
+                </button>
+                <button class="exhibit-thumb" data-src="assets/exhibit-3.jpg" aria-label="Exhibition photo 5">
+                  <img src="assets/exhibit-3.jpg" alt="">
+                </button>
+                <button class="exhibit-thumb" data-src="assets/exhibit-4.jpg" aria-label="Exhibition photo 6">
+                  <img src="assets/exhibit-4.jpg" alt="">
                 </button>
               </div>
             </div>
