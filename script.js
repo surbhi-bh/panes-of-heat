@@ -869,11 +869,11 @@ window.__runWhenDataReady(function () {
     tick.setAttribute('class', 'clock-boundary-tick');
     svg.appendChild(tick);
     const bl = document.createElementNS(NS, 'text');
-    bl.setAttribute('x', cx + (r + 18) * bx);
+    bl.setAttribute('x', cx + (r + 18) * bx - 6);
     bl.setAttribute('y', cy + (r + 18) * by + 3);
-    bl.setAttribute('text-anchor', 'start');
+    bl.setAttribute('text-anchor', 'end');
     bl.setAttribute('class', 'clock-boundary-label');
-    bl.textContent = isDay ? '7 AM' : '7 PM';
+    bl.textContent = '7 AM / 7 PM';
     svg.appendChild(bl);
 
     // Contiguous hot-hour runs on a 24-h loop

@@ -460,9 +460,9 @@
         </div>
       </section>
 
-      <p class="story-para">Next, we looked at the hours we lose: when does the heat ease enough to step outside, and how quickly are those windows shrinking?</p>
+      <p class="story-para">Next, we looked at the hours we lose: when does the heat ease enough to step outside, and how quickly are those windows shrinking? We zoomed into the hottest month for each city. For many, these are the hours spent outdoors earning a livelihood.</p>
 
-      <p class="story-para">On the day-time face (7:30 AM to 7:30 PM), felt heat crosses the safe cutoff by <strong>9:30 AM</strong> in Delhi and Chennai, and by <strong>10:30 AM</strong> in Kolkata and Mumbai. The comfortable window narrows to a couple of morning hours before the working day even begins. On the night-time face (7:30 PM to 7:30 AM), coastal Chennai and Mumbai never fully release, felt heat stays above the 30&nbsp;°C night threshold through midnight and into the pre-dawn hours.</p>
+      <p class="story-para">In Chennai and Mumbai, even the early morning hours between <strong>6 to 8 AM</strong> feel hot. In Delhi, the afternoon remains the hottest part of the day, but heat stress begins as early as <strong>9 AM</strong>.</p>
 
       <section class="insight-section anchor-target" id="insight-2">
         <div class="title-with-toggle">
@@ -484,9 +484,7 @@
         <div class="clocks-grid" id="clocksHeatStretch"></div>
       </section>
 
-      <p class="story-para">A count of hot days tells us how often the heat arrived, but not when in the day it landed. To see that, we zoomed in on the hottest month for each city and asked a simpler question: which hours of the day were already too hot to safely step outside? The answer isn't just noon-and-afternoon &mdash; in Delhi the recorded night temperature never falls below the tropical-night threshold, meaning even 4&nbsp;AM offers no relief from the heat.</p>
-
-      <p class="story-para">Put the pieces together and a fuller picture appears &mdash; a year of days stacked into a tower of windows, one per day, lighting up hour by hour to whatever the body was actually experiencing. The panels below let you scrub through 2024 for each city and watch how heat spreads across the hours, from dawn to dusk to dusk again.</p>
+      <p class="story-para">Since we were working with megacities, we wanted the form to reflect them. A skyscraper became our metaphor for the year: the months became floors, and every window represented a day. Our first prototype was a pair of digital buildings, one visualising recorded temperatures, the other visualising felt heat.</p>
 
       <section class="insight-section anchor-target" id="insight-windows">
         <h3 class="insight-title">Windows of discomfort</h3>
@@ -590,7 +588,7 @@
           <div class="phys-step-num">1</div>
           <div class="phys-step-body">
             <h4 class="phys-step-title">We began by sketching our findings</h4>
-            <p class="phys-step-text">How do you make heat &mdash; something invisible and constantly changing &mdash; something people can see and feel? We started with sketches, exploring how a year of temperatures could become a physical object. Calendars, clocks and towers slowly emerged as the language of the installation.</p>
+            <p class="phys-step-text">Making heat visible is tricky. How do you materialise it? How do you make people feel it? We couldn't exactly turn the room up to 45&nbsp;°C. So we started with paper and pen, exploring the forms it could take to evoke the experience of heat.</p>
             <figure class="phys-duo">
               <div class="phys-duo-imgs">
                 <img src="assets/sketch-1.jpg" alt="Early sketch of the tower proportions in a notebook, worked out on a cutting mat">
@@ -604,25 +602,65 @@
         <div class="phys-step">
           <div class="phys-step-num">2</div>
           <div class="phys-step-body">
-            <h4 class="phys-step-title">While experimenting with materials, <em class="phys-em">we went window shopping</em></h4>
-            <p class="phys-step-text">Finding the right material took almost as much work as designing the data. We tested acrylic, paper, lighting, paints and adhesives until every &ldquo;window&rdquo; could glow, stack neatly and read clearly from a distance.</p>
-            <div class="phys-materials">
-              <div class="phys-materials-title">Materials used</div>
-              <ul class="phys-bom-simple">
-                <li>1 &times; ESP32 Development Board</li>
-                <li>3 &times; WS2812B Addressable RGB LED Strips (5-Meter Rolls, 30&nbsp;LEDs/meter)</li>
-                <li>2 &times; MAX7219 4-in-1 Dot Matrix Display Modules</li>
-                <li>1 &times; 5V DC Enclosed Switching Power Supply (5V&nbsp;30A)</li>
-                <li>Heavy-gauge power wire &amp; jumper wires</li>
-              </ul>
-            </div>
-
+            <h4 class="phys-step-title">We drew out the mechanics</h4>
+            <p class="phys-step-text">Before we could build anything, we had to figure out how the data would embody a physical object. We drew out the mechanics.</p>
             <figure class="phys-feature">
               <div class="phys-feature-imgs">
-                <img src="assets/built-master.png" alt="Laser-cut layout for the tower panels: hundreds of window slots arranged on two 3×4 ft sheets">
                 <img src="assets/diagram.png" alt="Wiring diagram: ESP32 driving daisy-chained MAX7219 matrix displays and WS2812B LED strips, with an analog joystick for city selection">
               </div>
-              <figcaption>The laser-cut layouts and the wiring schematic that drove the whole build</figcaption>
+              <figcaption>The wiring schematic that drove the whole build</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="phys-step">
+          <div class="phys-step-num">3</div>
+          <div class="phys-step-body">
+            <h4 class="phys-step-title">And then <em class="phys-em">we went window shopping</em></h4>
+            <p class="phys-step-text">Turning the concept into an object meant solving a series of design problems. We experimented with acrylic, paper, paints, lighting, electronics, and adhesives, refining the build until every window lit up evenly, without light bleeding into the next.</p>
+            <div class="phys-materials">
+              <div class="phys-materials-title">Materials used</div>
+              <div class="phys-bom-grouped">
+                <div class="phys-bom-group">
+                  <div class="phys-bom-group-title">Structure</div>
+                  <ul>
+                    <li>Laser-cut acrylic</li>
+                    <li>Paper inserts</li>
+                    <li>Paints &amp; adhesives</li>
+                  </ul>
+                </div>
+                <div class="phys-bom-group">
+                  <div class="phys-bom-group-title">Lighting</div>
+                  <ul>
+                    <li>3 &times; WS2812B addressable RGB LED strips</li>
+                  </ul>
+                </div>
+                <div class="phys-bom-group">
+                  <div class="phys-bom-group-title">Control</div>
+                  <ul>
+                    <li>ESP32 development board</li>
+                    <li>2 &times; MAX7219 dot matrix display modules</li>
+                  </ul>
+                </div>
+                <div class="phys-bom-group">
+                  <div class="phys-bom-group-title">Power</div>
+                  <ul>
+                    <li>5V 30A switching power supply</li>
+                    <li>Heavy-gauge power wire &amp; jumper wires</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <figure class="phys-feature phys-feature-wide">
+              <div class="phys-feature-imgs">
+                <img src="assets/built-master.png" alt="Laser-cut layout for the tower panels: hundreds of window slots arranged on two 3×4 ft sheets, with slotted dividers behind each window">
+              </div>
+              <div class="phys-feature-pair">
+                <img src="assets/one-strip.jpg" alt="One vertical strip of the laser-cut assembly showing a column of windows">
+                <img src="assets/one-box.png" alt="Close-up of a single window box with slotted dividers, showing how each pane is isolated from its neighbours">
+              </div>
+              <figcaption>The laser-cut layouts that drove the whole build &mdash; slotted dividers sit behind every window to keep each pane&rsquo;s light from bleeding into the next.</figcaption>
             </figure>
             <div class="phys-gallery">
               <div class="phys-thumbs" data-target="phys-view-2">
@@ -683,6 +721,7 @@
                 <button class="phys-thumb" data-src="assets/lights-1.jpg" aria-label="Lights 1"></button>
                 <button class="phys-thumb active" data-src="assets/lights-2.jpg" aria-label="Lights 2"></button>
                 <button class="phys-thumb" data-src="assets/lights-3.jpg" aria-label="Lights 3"></button>
+                <button class="phys-thumb" data-src="assets/lights-4.jpg" aria-label="Lights 4"></button>
               </div>
               <div class="phys-view" id="phys-view-4">
                 <div class="phys-view-empty">Click a thumbnail to view</div>
@@ -703,6 +742,7 @@
               <div class="phys-duo-imgs">
                 <img src="assets/people-1.jpg" alt="Close-up of a tower panel showing tiny stick-figure silhouettes placed inside the illuminated windows">
                 <img src="assets/people-2.jpg" alt="Sheets of cut stick-figure silhouettes ready to be placed on the towers">
+                <img src="assets/people.jpg" alt="Stick-figure silhouettes glowing against the tower windows in the finished installation">
               </div>
             </figure>
           </div>
@@ -712,33 +752,44 @@
     </section>
 
     <section class="closing">
-      <div class="closing-carousel" aria-label="Closing photo carousel">
-        <div class="closing-track">
-          <figure><img src="assets/visiting-us.jpg" alt="Visitors leaning in to look at the illuminated tower"></figure>
-          <figure><img src="assets/all-of-us.jpg" alt="The team behind Panes of Heat"></figure>
-          <figure><img src="assets/exhibit-hero.jpg" alt="The full Panes of Heat installation"></figure>
-          <figure><img src="assets/exhibit-2.jpg" alt="Exhibit view 2"></figure>
-          <figure><img src="assets/exhibit-3.jpg" alt="Exhibit view 3"></figure>
-          <figure><img src="assets/exhibit-4.jpg" alt="Exhibit view 4"></figure>
-          <figure><img src="assets/people-1.jpg" alt="Close-up of stick-figure silhouettes on the tower"></figure>
-          <figure><img src="assets/lights-2.jpg" alt="Windows in mid-test, glowing with data"></figure>
-          <!-- duplicated for seamless loop -->
-          <figure aria-hidden="true"><img src="assets/visiting-us.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/all-of-us.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/exhibit-hero.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/exhibit-2.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/exhibit-3.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/exhibit-4.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/people-1.jpg" alt=""></figure>
-          <figure aria-hidden="true"><img src="assets/lights-2.jpg" alt=""></figure>
-        </div>
-      </div>
       <p class="closing-thanks">Thank you for engaging with our work at <strong>Data, Otherwise</strong>, <strong>VizChitra&nbsp;2026</strong>.</p>
       <img class="closing-logo" src="assets/logo.png" alt="VizChitra logo">
       <div class="closing-credits">
-        <p><strong>Curated by:</strong> Debanshu Bhaumik, Siddhartha Mukherjee</p>
-        <p><strong>Built with support from:</strong> Rachel, Kavi, Aditi, and Laser Smiths</p>
-        <p><strong>Our exhibit stood alongside:</strong> x, y, z</p>
+        <p><strong>Curators &amp; Mentors:</strong> <a href="https://www.debanshubhaumik.com/" target="_blank" rel="noopener">Debanshu Bhaumik</a>, Siddhartha Mukherjee, Amit Kapoor</p>
+        <p><strong>Assembled by many builders:</strong> Rachel, Kavi, Aditi, Saurabh, Paper Crane Lab, and Laser Smiths</p>
+        <p><strong>Exhibited @ Bangalore International Centre alongside:</strong></p>
+        <ul class="closing-exhibits">
+          <li>Fading Out to Extinction by Aswanth Choyan</li>
+          <li><a href="https://klimatekundli.com/" target="_blank" rel="noopener">Klimate Kundli</a> by Nithya Kirti M. &amp; Arkoprabho Bhattacharjee</li>
+          <li>The Pollution That Wasn't by Diagram Chasing</li>
+          <li><a href="https://shreyadan.com/tangible" target="_blank" rel="noopener">Puddle Beneath the Plate</a> by Shreya Dan</li>
+          <li>The Scent of Grounded Change by Sadhana Lokesh</li>
+          <li>Silent Cities by Vishal Garg</li>
+          <li>Vanishing Wings by Meghana Singh</li>
+        </ul>
+      </div>
+      <div class="closing-carousel" aria-label="Closing photo carousel">
+        <div class="closing-track">
+          <figure><img src="assets/DSC05571.jpg" alt="Team member seated on the floor beside the illuminated tower during setup, laptop connected to the installation"></figure>
+          <figure><img src="assets/all-of-us.jpg" alt="The team behind Panes of Heat"></figure>
+          <figure><img src="assets/exhibit-hero.jpg" alt="The full Panes of Heat installation"></figure>
+          <figure><img src="assets/exhibit-2.jpg" alt="Exhibit view 2"></figure>
+          <figure><img src="assets/visiting-us.jpg" alt="Visitors leaning in to look at the illuminated tower"></figure>
+          <figure><img src="assets/IMG_8350.JPG" alt="Exhibit view"></figure>
+          <figure><img src="assets/IMG_5.JPG" alt="Photograph of the finished laser-cut assembly"></figure>
+          <figure><img src="assets/exhibit-3.jpg" alt="Exhibit view 3"></figure>
+          <figure><img src="assets/exhibit-4.jpg" alt="Exhibit view 4"></figure>
+          <!-- duplicated for seamless loop -->
+          <figure aria-hidden="true"><img src="assets/DSC05571.jpg" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/all-of-us.jpg" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/exhibit-hero.jpg" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/exhibit-2.jpg" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/visiting-us.jpg" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/IMG_8350.JPG" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/IMG_5.JPG" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/exhibit-3.jpg" alt=""></figure>
+          <figure aria-hidden="true"><img src="assets/exhibit-4.jpg" alt=""></figure>
+        </div>
       </div>
     </section>
 
