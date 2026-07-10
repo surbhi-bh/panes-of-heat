@@ -2170,10 +2170,12 @@
     .hero-header .hero-svg {
       order: 4;
       display: block;
-      width: 130%;
+      width: 115%;
       max-width: none;
       height: auto;
-      margin: 14px -15% 4px;
+      /* Overhang split ~2:1 to the left so the clock (right side of viewBox)
+         stays inside the phone frame instead of getting clipped. */
+      margin: 14px -5% 4px -10%;
     }
     .hero-header .hero-title    { order: 1; }
     .hero-header .hero-tagline  { order: 2; }
