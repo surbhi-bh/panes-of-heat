@@ -780,23 +780,21 @@ window.__runWhenDataReady(function () {
       svg.appendChild(tick);
     }
 
-    // Four hour numerals at 12 / 3 / 6 / 9 positions — outside the ring.
-    // 12 and 6 sit at the vertical anchors and stay bare, like a normal clock.
-    // The 3 and 9 positions carry the meridian so the reader can tell whether
-    // they're looking at the day face or the night face.
+    // Cardinal-position numerals (bucket h renders at ((h%12)/12)*2π - π/2).
+    // Day face runs 7:30 AM → 7:30 PM; night face 7:30 PM → 7:30 AM.
     const isDay = (half === 'day');
     const labels = isDay
       ? [
-          { text: '12',   x: 0,  y: -1 },
-          { text: '3 PM', x: 1,  y:  0 },
-          { text: '6',    x: 0,  y:  1 },
-          { text: '9 AM', x: -1, y:  0 }
+          { text: '12 PM',  x: 0,  y: -1 },
+          { text: '3 PM',   x: 1,  y:  0 },
+          { text: '6 PM',   x: 0,  y:  1 },
+          { text: '9 AM',   x: -1, y:  0 }
         ]
       : [
-          { text: '12',   x: 0,  y: -1 },
-          { text: '3 AM', x: 1,  y:  0 },
-          { text: '6',    x: 0,  y:  1 },
-          { text: '9 PM', x: -1, y:  0 }
+          { text: '12 AM',  x: 0,  y: -1 },
+          { text: '3 AM',   x: 1,  y:  0 },
+          { text: '6 AM',   x: 0,  y:  1 },
+          { text: '9 PM',   x: -1, y:  0 }
         ];
     labels.forEach(pos => {
       const rr = 96;
@@ -808,6 +806,27 @@ window.__runWhenDataReady(function () {
       t.textContent = pos.text;
       svg.appendChild(t);
     });
+
+    // "7" boundary marker — day face marks 7 AM (start of the day window);
+    // night face marks 7 PM (start of the night window). Same angular position
+    // on a 12-hour dial, but labelled to match the face the viewer is on.
+    const boundaryAngle = (7 / 12) * 2 * Math.PI - Math.PI / 2;
+    const bx = Math.cos(boundaryAngle);
+    const by = Math.sin(boundaryAngle);
+    const tick = document.createElementNS(NS, 'line');
+    tick.setAttribute('x1', cx + (r - 6) * bx);
+    tick.setAttribute('y1', cy + (r - 6) * by);
+    tick.setAttribute('x2', cx + (r + 8) * bx);
+    tick.setAttribute('y2', cy + (r + 8) * by);
+    tick.setAttribute('class', 'clock-boundary-tick');
+    svg.appendChild(tick);
+    const bl = document.createElementNS(NS, 'text');
+    bl.setAttribute('x', cx + (r + 18) * bx);
+    bl.setAttribute('y', cy + (r + 18) * by + 3);
+    bl.setAttribute('text-anchor', 'start');
+    bl.setAttribute('class', 'clock-boundary-label');
+    bl.textContent = isDay ? '7 AM' : '7 PM';
+    svg.appendChild(bl);
 
     // Contiguous hot-hour runs on a 24-h loop
     function buildRuns(hotHours) {
@@ -909,8 +928,9 @@ window.__runWhenDataReady(function () {
     drawClock(recCard.svg,  t, 'seg-recorded', currentHalf);
     drawClock(feltCard.svg, u, 'seg-felt',     currentHalf);
     const hot = HOT_MONTH[currentCity];
-    caption.textContent =
-      'Hottest month in ' + CITY_DISPLAY[currentCity] + ': ' + hot.name + ' 2024';
+    caption.innerHTML =
+      '<span class="caption-main">Hottest month in ' + CITY_DISPLAY[currentCity] + ': ' + hot.name + ' 2024</span>' +
+      '<span class="caption-sub">Hours above comfortable heat thresholds in the hottest month of the city in 2024</span>';
   }
   renderClock();
 
