@@ -298,9 +298,9 @@
       </svg>
 
       <h1 class="hero-title">Panes of Heat</h1>
-      <p class="hero-tagline">A window into hotter days and warmer nights across urban India.</p>
-      <p class="hero-byline">By Kashvi Bansal, Surbhi Bhatia&nbsp;&amp;&nbsp;Parth&nbsp;Bisen</p>
-      <p class="hero-credit">Created for <strong>Data, Otherwise</strong>, the tangible data exhibition on <span class="nowrap">climate and ecological change</span> at <strong>VizChitra&nbsp;2026</strong>.</p>
+      <p class="hero-tagline">A window into hotter days and warmer nights across urban India</p>
+      <p class="hero-byline">By Kashvi Bansal, <a href="https://surbhibhatia.com" target="_blank" rel="noopener">Surbhi Bhatia</a> and <a href="https://www.linkedin.com/in/pbisen/" target="_blank" rel="noopener">Parth&nbsp;Bisen</a></p>
+      <p class="hero-credit">Created for <strong><a href="https://vizchitra.com/2026/exhibition" target="_blank" rel="noopener">Data, Otherwise</a></strong>, the tangible data exhibition on <span class="nowrap">climate and ecological change</span> at <strong><a href="https://vizchitra.com/2026" target="_blank" rel="noopener">VizChitra&nbsp;2026</a></strong>.</p>
     </header>
 
     <section class="view active" id="view-findings" data-view="findings">
@@ -310,57 +310,79 @@
         <p class="warming-lede">The year 2024 was the hottest ever recorded, and 2025 followed close behind as the third warmest year on Earth since 1850, data from the World Meteorological Organization shows.<br><br>In fact, years since 2015 form the hottest decade on record, with temperatures remaining dangerously high. In the three-year period from 2023&ndash;2025, for the first time, the average global temperature crossed 1.5&nbsp;°C above pre-industrial levels &mdash; a key climate threshold scientists have long warned about.</p>
         <div id="warmingChartWrap" class="warming-chart-wrap">
           <h3 class="warming-chart-title">Globally, the year 2024 was the hottest on record, crossing the 1.5&nbsp;°C threshold</h3>
-          <p class="warming-chart-subtitle">Change in global temperatures since pre-industrial levels.</p>
+          <p class="warming-chart-subtitle">Change in global temperatures since pre-industrial levels</p>
           <div class="warming-tooltip" id="warmingTooltip"></div>
           <svg id="warmingChart" viewBox="0 0 900 420" preserveAspectRatio="xMidYMid meet"></svg>
-          <div class="warming-legend">
-            <span class="wl-item"><span class="wl-swatch" style="background: linear-gradient(90deg, #fff2b0, #fde047, #f59e0b, #c2410c);"></span>Hotter overall &rarr; deeper orange</span>
-            <span class="wl-item"><span class="wl-swatch wl-swatch-line"></span>1.5&nbsp;°C threshold</span>
-          </div>
-          <p class="apr-source-right">Source: ERA5</p>
+          <p class="chart-source">Source: ERA5</p>
         </div>
       </section>
 
       <p class="story-para" id="thermoStartAnchor">India's heatwaves are becoming longer, hotter, and more dangerous. On 27 April 2026, all 50 of the world's hottest cities were in India, with average peak temperatures of 44.7&nbsp;°C. Yet the temperatures reported on a thermometer capture only part of the story. Heat stress depends not just on air temperature, but also on humidity, wind, and sunlight &mdash; meaning a recorded temperature of 40&nbsp;°C can feel closer to 48&ndash;52&nbsp;°C on the human body. The effects ripple through everyday life: outdoor work becomes unsafe, productivity falls, children miss school, hospital admissions rise, and hot nights prevent the body from recovering. With limited access to air conditioning and millions working outdoors, heat is not simply a weather event in India &mdash; it is an everyday public health and livelihood challenge.</p>
 
-      <p class="story-para">The Indian Meteorological Department officially declares a heatwave when the maximum temperature crosses 40&nbsp;°C in the plains, 37&nbsp;°C along the coast, or 30&nbsp;°C in the hills, and is at least 4.5&nbsp;°C above the seasonal normal. But the lived experience of heat-stress runs far ahead of these thresholds. Once humidity, low wind, and direct sun are factored in, what a body actually feels at 40&nbsp;°C can sit closer to 48&ndash;52&nbsp;°C on the UTCI &ldquo;felt&rdquo; scale &mdash; the point at which the body can no longer shed heat fast enough to keep its core temperature stable.</p>
-
       <div class="utci-box">
-        <div class="utci-box-eyebrow">What is UTCI?</div>
-        <div class="utci-box-title">Universal Thermal Climate Index &mdash; how heat actually lands on the body</div>
-        <p class="utci-box-body">The Universal Thermal Climate Index (UTCI) is a &ldquo;felt&rdquo; temperature. It combines <strong>air temperature</strong>, <strong>humidity</strong>, <strong>wind</strong>, and <strong>solar radiation</strong> into a single number that reflects what a person outdoors actually experiences. The thermometer measures the air; the UTCI measures the load on the body. Above 32&nbsp;°C the body is already in strong heat stress; above 46&nbsp;°C the body cannot keep its core temperature stable.</p>
-        <div class="utci-scale" aria-label="UTCI heat-stress bands">
-          <div class="utci-band b1"><div class="band-range">9 – 26 °C</div><div class="band-name">No thermal stress</div></div>
-          <div class="utci-band b2"><div class="band-range">26 – 32 °C</div><div class="band-name">Moderate heat stress</div></div>
-          <div class="utci-band b3"><div class="band-range">32 – 38 °C</div><div class="band-name">Strong heat stress</div></div>
-          <div class="utci-band b4"><div class="band-range">38 – 46 °C</div><div class="band-name">Very strong heat stress</div></div>
-          <div class="utci-band b5"><div class="band-range">&gt; 46 °C</div><div class="band-name">Extreme heat stress</div></div>
-        </div>
+        <div class="utci-box-title">Universal Thermal Climate Index (UTCI data)</div>
+        <dl class="utci-meta">
+          <dt>Availability</dt>
+          <dd>Available at grid level, worldwide, 1940 &ndash; Present</dd>
+
+          <dt>Source</dt>
+          <dd><a href="https://cds.climate.copernicus.eu/datasets/derived-utci-historical?tab=download" target="_blank" rel="noopener">https://cds.climate.copernicus.eu/datasets/derived-utci-historical?tab=download</a></dd>
+
+          <dt>Download</dt>
+          <dd>Downloaded via API or on portal after log-in as NetCDF files, which have to be converted. Temperature may also need to be converted from Fahrenheit to Celsius. For more details, check <a href="#view-fetching">methodology section</a>.</dd>
+
+          <dt>Frequency</dt>
+          <dd>Hourly, Daily, Monthly, Yearly</dd>
+
+          <dt>Methodology</dt>
+          <dd>
+            Input variables in the model:
+            <ol class="utci-inputs">
+              <li>Air Temperature (&deg;C)</li>
+              <li>Mean Radiant Temperature (&deg;C)</li>
+              <li>Relative Humidity (%)</li>
+              <li>Wind Speed (m/s)</li>
+            </ol>
+          </dd>
+
+          <dt>Bands</dt>
+          <dd class="utci-bands-cell">
+            <div class="utci-strip" aria-label="UTCI thermal-stress bands from extreme cold to extreme heat">
+              <div class="utci-strip-bar">
+                <span class="utci-band c5"><span class="ub-label">Extreme cold</span><span class="ub-range">&lt; -40°</span></span>
+                <span class="utci-band c4"><span class="ub-label">Very strong cold</span><span class="ub-range">-40 to -27°</span></span>
+                <span class="utci-band c3"><span class="ub-label">Strong cold</span><span class="ub-range">-27 to -13°</span></span>
+                <span class="utci-band c2"><span class="ub-label">Moderate cold</span><span class="ub-range">-13 to 0°</span></span>
+                <span class="utci-band c1"><span class="ub-label">Slight cold</span><span class="ub-range">0 to 9°</span></span>
+                <span class="utci-band b1"><span class="ub-label">No stress <em>(target)</em></span><span class="ub-range">9 to 26°</span></span>
+                <span class="utci-band b2"><span class="ub-label">Moderate heat</span><span class="ub-range">26 to 32°</span></span>
+                <span class="utci-band b3"><span class="ub-label">Strong heat</span><span class="ub-range">32 to 38°</span></span>
+                <span class="utci-band b4"><span class="ub-label">Very strong heat</span><span class="ub-range">38 to 46°</span></span>
+                <span class="utci-band b5"><span class="ub-label">Extreme heat</span><span class="ub-range">&gt; 46°</span></span>
+              </div>
+            </div>
+          </dd>
+        </dl>
       </div>
 
+      <figure class="thermal-figure">
+        <a href="https://thermaltrace.climate.copernicus.eu/?agg=daily&anomaly=false&date=2024-01-01&heat=true&lat=28.63&lng=77.15&variable=utci_daily_max_cat" target="_blank" rel="noopener">
+          <img src="assets/thermal-trace.png" alt="Copernicus ThermalTrace map showing seasonal peak heat stress across South Asia and West Asia for March–May 2023, with New Delhi pinned">
+        </a>
+        <figcaption>Seasonal peak heat stress across South Asia, Mar&ndash;May 2023. Screenshot from Copernicus ThermalTrace.</figcaption>
+      </figure>
+
+      <p class="story-para">The Indian Meteorological Department officially declares a heatwave when the maximum temperature crosses 40&nbsp;°C in the plains, 37&nbsp;°C along the coast, or 30&nbsp;°C in the hills, and is at least 4.5&nbsp;°C above the seasonal normal. But the lived experience of heat-stress runs far ahead of these thresholds. Once humidity, low wind, and direct sun are factored in, what a body actually feels at 40&nbsp;°C can sit closer to 48&ndash;52&nbsp;°C on the UTCI &ldquo;felt&rdquo; scale &mdash; the point at which the body can no longer shed heat fast enough to keep its core temperature stable.</p>
+
       <section class="panes-section anchor-target" id="panes-anchor">
-        <h3 class="panes-title">How actual and felt temperature varies across the day</h3>
-        <p class="panes-subtitle">Daily actual (T2M) and feels-like (UTCI) temperatures across four Indian metros in 2024. Each vertical dumbbell connects the day's actual temperature to its felt temperature; watch the clock tick through the hours and all four cities update together.</p>
+        <h3 class="panes-title">Degrees apart</h3>
+        <p class="panes-subtitle">The difference between <span class="panes-hl recorded">recorded air temperature</span> and <span class="panes-hl felt">felt temperature</span> through the day, in 2024</p>
 
         <div class="panes-controls">
           <button class="play-btn" id="playBtn">Pause</button>
           <div class="clock-block">
-            <div class="clock-digital" id="clockDigital">12:30 <span class="ampm">PM</span></div>
+            <div class="clock-digital" id="clockDigital">12:30<span class="ampm">PM</span></div>
           </div>
-        </div>
-
-        <div class="panes-legend">
-          <span class="dot actual" aria-hidden="true"></span>
-          <span class="label actual">Actual (T2M)</span>
-          <span class="dot felt" aria-hidden="true"></span>
-          <span class="label felt">Feels-like (UTCI) &middot; hotter than actual</span>
-          <span class="dot felt-cool" aria-hidden="true"></span>
-          <span class="muted">Feels-like &middot; cooler than actual</span>
-          <span class="sep"></span>
-          <span class="ref-sw very" aria-hidden="true"></span>
-          <span class="muted">Very strong heat &middot; 40°C</span>
-          <span class="ref-sw" aria-hidden="true"></span>
-          <span class="muted">Extreme heat &middot; 46°C</span>
         </div>
 
         <div class="panes-grid" id="panesGrid">
@@ -371,24 +393,22 @@
         </div>
       </section>
 
+      <p class="story-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
 
       <section class="insight-section anchor-target" id="insight-1">
-        <div class="insight-header-row">
-          <div class="insight-header-left">
-            <h3 class="insight-title">Days are feeling hotter and nights are no longer a relief</h3>
-            <p class="insight-finding">Across all four cities, roughly a third of the year — or more — the nights stay hot enough that the body cannot recover.</p>
-            <p class="insight-subtitle">2024 calendar for each city. Coloured cells mark days when the temperature crossed the city's day cutoff (Delhi and Kolkata 40&nbsp;°C, Mumbai and Chennai 37&nbsp;°C). A blue dot in the corner marks a tropical night &mdash; on the Actual panel, this is a night when T2M stayed above 25&nbsp;°C; on the Feels-like panel, a night when UTCI stayed above 25&nbsp;°C. The deeper the blue, the warmer the night.</p>
-          </div>
-          <div class="city-toggle city-toggle-right" id="calCityToggle">
+        <div class="title-with-toggle">
+          <h3 class="insight-title">A year of hot days and hot nights</h3>
+          <div class="city-toggle" id="calCityToggle">
             <button data-city="delhi" class="active">Delhi</button>
             <button data-city="mumbai">Mumbai</button>
             <button data-city="chennai">Chennai</button>
             <button data-city="kolkata">Kolkata</button>
           </div>
         </div>
+        <p class="insight-subtitle">Number of days where days felt hotter <span class="inline-swatch red" aria-hidden="true"></span> and nights warmer <span class="inline-swatch yellow" aria-hidden="true"></span></p>
         <div class="cal-grid-2">
           <div class="cal-panel t2m">
-            <div class="cal-panel-title">Actual temperature (T2M)</div>
+            <div class="cal-panel-title">Recorded temperature</div>
             <div class="cal-stat-row">
               <span class="cal-stat">
                 <span class="cal-stat-num t2m" id="calCountT2M">—</span>
@@ -397,13 +417,13 @@
               <span class="cal-stat-sep">|</span>
               <span class="cal-stat">
                 <span class="cal-stat-num night" id="calCountT2MNight">—</span>
-                <span class="cal-stat-lbl">tropical nights</span>
+                <span class="cal-stat-lbl">warm nights</span>
               </span>
             </div>
             <div class="cal-months" id="calMonthsT2M"></div>
           </div>
           <div class="cal-panel utci">
-            <div class="cal-panel-title">Feels-like temperature (UTCI)</div>
+            <div class="cal-panel-title">Felt temperature</div>
             <div class="cal-stat-row">
               <span class="cal-stat">
                 <span class="cal-stat-num utci" id="calCountUTCI">—</span>
@@ -412,41 +432,41 @@
               <span class="cal-stat-sep">|</span>
               <span class="cal-stat">
                 <span class="cal-stat-num night" id="calCountUTCINight">—</span>
-                <span class="cal-stat-lbl">tropical nights</span>
+                <span class="cal-stat-lbl">warm nights</span>
               </span>
             </div>
             <div class="cal-months" id="calMonthsUTCI"></div>
           </div>
         </div>
-        <div class="cal-legend">
-          <span><span class="swatch t2m-lo"></span>Actual above cutoff</span>
-          <span><span class="swatch t2m-mid"></span>+3° over cutoff</span>
-          <span><span class="swatch t2m-hi"></span>+6° over cutoff</span>
-          <span style="width: 14px; display: inline-block;"></span>
-          <span><span class="swatch utci-lo"></span>Felt above cutoff</span>
-          <span><span class="swatch utci-mid"></span>+3° over cutoff</span>
-          <span><span class="swatch utci-hi"></span>+6° over cutoff</span>
-          <span style="width: 14px; display: inline-block;"></span>
-          <span><span class="swatch night-lo"></span>Tropical night &gt; 25°</span>
-          <span><span class="swatch night-mid"></span>&gt; 27°</span>
-          <span><span class="swatch night-hi"></span>&gt; 29°</span>
-        </div>
       </section>
 
       <section class="insight-section anchor-target" id="insight-2">
-        <h3 class="insight-title">The heat stretches on &mdash; the comfort window for being outdoors is closing</h3>
-        <p class="insight-subtitle">Each clock face is 12 hours. The <em>inner ring</em> (yellow) marks the hours where the <em>actual</em> temperature crossed the city's cutoff on more than 30 days of 2024; the <em>outer ring</em> (orange) marks the same threshold on the <em>felt</em> (UTCI) scale. Delhi and Kolkata use 40&nbsp;°C during the day and 30&nbsp;°C at night; Mumbai and Chennai use 37&nbsp;°C and 30&nbsp;°C. Toggle between the morning face (12 AM &ndash; 12 PM) and the evening face (12 PM &ndash; 12 AM).</p>
-        <div class="clock-halfday-toggle" id="clockHalfdayToggle">
-          <button data-half="am" class="active">Morning</button>
-          <button data-half="pm">Evening</button>
+        <div class="title-with-toggle">
+          <h3 class="insight-title">Around the clock</h3>
+          <div class="chart-controls-cluster">
+            <div class="city-toggle" id="clockHalfdayToggle">
+              <button data-half="day" class="active">Day-time</button>
+              <button data-half="night">Night-time</button>
+            </div>
+            <div class="city-toggle" id="clockCityToggle">
+              <button data-city="delhi" class="active">Delhi</button>
+              <button data-city="mumbai">Mumbai</button>
+              <button data-city="chennai">Chennai</button>
+              <button data-city="kolkata">Kolkata</button>
+            </div>
+          </div>
         </div>
-        <div class="clocks-supertitle">Number of hours too hot to step out</div>
+        <p class="insight-subtitle">More hours of the day are becoming too hot to step outside. Hours above comfortable heat thresholds in the hottest month of the city in 2024</p>
         <div class="clocks-grid" id="clocksHeatStretch"></div>
       </section>
 
+      <p class="story-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+
+      <p class="story-para">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
       <section class="insight-section anchor-target" id="insight-windows">
-        <h3 class="insight-title">Windows of comfort are shrinking as heat spills further into mornings and nights</h3>
-        <p class="insight-subtitle">Each window in a tower is one day of 2024. The clock ticks through 24 hours &mdash; every window updates to show how hot it was, at that hour, on that day. On the left, the <em>actual</em> temperature (T2M). On the right, the <em>felt</em> temperature (UTCI). Below the city's cutoff, the window sits cool and blue; above it, the window lights up yellow &rarr; orange &rarr; red &rarr; deep red as the load on the body climbs.</p>
+        <h3 class="insight-title">Windows of discomfort</h3>
+        <p class="insight-subtitle">Bringing together our insights on how people in India's biggest cities experience heat</p>
 
         <div class="wcom-controls">
           <div class="wcom-controls-left">
@@ -454,9 +474,9 @@
           </div>
           <div class="wcom-controls-right">
             <div class="wcom-clock-block">
-              <div class="wcom-clock-digital" id="wcomClockDigital">01:30 <span class="ampm">PM</span></div>
+              <div class="wcom-clock-digital" id="wcomClockDigital">01:30<span class="ampm">PM</span></div>
             </div>
-            <div class="wcom-city-toggle" id="wcomCityToggle">
+            <div class="city-toggle" id="wcomCityToggle">
               <button data-city="delhi" class="active">Delhi</button>
               <button data-city="mumbai">Mumbai</button>
               <button data-city="chennai">Chennai</button>
@@ -504,6 +524,7 @@
       <!-- Full-width white section panel: main photo + clickable thumbnail windows -->
       <div class="exhibit-panel" aria-label="Panes of Heat exhibition photo">
         <div class="exhibit-panel-inner">
+          <h2 class="exhibit-panel-title">A Paneful Experience</h2>
           <img id="exhibitMainImage" class="exhibit-panel-image" src="assets/exhibit-hero.jpg" alt="Panes of Heat installation with towers of illuminated windows at the Data, Otherwise exhibition">
           <div class="exhibit-carousel">
             <button class="carousel-arrow" id="exhibitPrev" aria-label="Previous photo">
@@ -536,7 +557,7 @@
       </div>
 
       <section class="physicalisation-section anchor-target" id="view-physicalisation">
-        <div class="phys-eyebrow">Data Physicalisation</div>
+        <h2 class="phys-title">Behind Panes of Heat</h2>
         <h3 class="phys-h2">How we brought this exhibit to life</h3>
 
         <div class="phys-step">
@@ -625,7 +646,7 @@
       </section>
     </section>
 
-    <section id="view-fetching" data-view="fetching" style="display: block; margin-top: 100px; padding-top: 60px; border-top: 1px solid #ececec;">
+    <section id="view-fetching" data-view="fetching" style="display: block; margin-top: 100px; padding-top: 60px;">
       <h3 class="insight-title" style="font-size: 30px; margin-bottom: 8px;">Data Methodology</h3>
       <p class="method-strap">Sources, thresholds, and how IST hours are computed from UTC samples</p>
       <div class="methodology-block">

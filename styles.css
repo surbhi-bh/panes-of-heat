@@ -137,6 +137,16 @@
     color: #161616;
     margin: 0 0 8px 40px;
   }
+  .hero-header .hero-byline a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted #b3846b;
+    padding-bottom: 1px;
+    transition: border-color .12s;
+  }
+  .hero-header .hero-byline a:hover {
+    border-bottom-color: #6E1712;
+  }
   .hero-header .hero-credit {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: clamp(14px, 1.2vw, 17px);
@@ -150,6 +160,11 @@
   .hero-header .hero-credit strong {
     font-weight: 700;
     color: #6E1712;
+  }
+  .hero-header .hero-credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   .hero-header .nowrap { white-space: nowrap; }
   .hero-header .hero-subtitle {
@@ -324,28 +339,60 @@
   .panes-title,
   .insight-title {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 18px;
+    font-size: 26px;
     font-weight: 700;
-    color: #161616;
-    margin: 0 0 1px 0;
-    line-height: 1.35;
+    color: #6E1712;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
     max-width: 820px;
+    letter-spacing: -0.005em;
+  }
+  .warming-chart-title {
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(15px, 2.05vw, 20px);
   }
   .warming-chart-subtitle,
   .panes-subtitle,
   .insight-subtitle {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    color: #525252;
+    font-size: 17px;
+    font-weight: 500;
+    color: #262626;
     margin: 0 0 22px 0;
-    line-height: 1.5;
+    line-height: 1.55;
     max-width: 820px;
+  }
+  .panes-hl { font-weight: 600; }
+  .panes-hl.recorded { color: #f59e0b; }
+  .panes-hl.felt     { color: #e8202a; }
+  .panes-section .panes-subtitle { max-width: none; white-space: nowrap; }
+  .inline-swatch {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 3px 0 1px;
+  }
+  .inline-swatch.red {
+    width: 12px; height: 12px;
+    background: #c0382f;
+    border-radius: 2px;
+  }
+  .inline-swatch.blue {
+    width: 10px; height: 10px;
+    background: #1f6fb0;
+    border-radius: 50%;
+  }
+  .inline-swatch.yellow {
+    width: 10px; height: 10px;
+    background: #f1c21b;
+    border-radius: 50%;
   }
   #warmingChart { width: 100%; height: auto; display: block; overflow: visible; }
   #warmingChart .axis-tick { font-family: 'IBM Plex Mono', monospace; font-size: 14px; fill: #000; }
   #warmingChart .axis-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 14px;
-    letter-spacing: 0.06em; text-transform: uppercase; fill: #000;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0; text-transform: none; fill: #161616;
   }
   #warmingChart .gridline { stroke: #ececec; stroke-width: 1; shape-rendering: crispEdges; }
   #warmingChart .bar { transition: opacity .15s; }
@@ -366,6 +413,15 @@
     text-align: right; font-family: 'IBM Plex Mono', monospace;
     font-size: 11px; color: #6f6f6f; margin-top: 8px;
   }
+  .chart-source {
+    text-align: left;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8a8a8a;
+    margin: 12px 0 0;
+    letter-spacing: 0;
+  }
   .warming-tooltip {
     position: absolute; pointer-events: none; background: #161616;
     color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
@@ -377,66 +433,132 @@
   .utci-box {
     max-width: 820px;
     margin: 8px 0 44px;
-    border: 1px solid #e0e0e0;
-    background: #fafafa;
-    padding: 24px 28px;
-    border-radius: 3px;
-  }
-  .utci-box-eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #c0382f;
-    font-weight: 600;
-    margin-bottom: 8px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
   }
   .utci-box-title {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 700;
     color: #161616;
-    line-height: 1.3;
-    margin-bottom: 10px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
   }
-  .utci-box-body {
+  .utci-meta {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    column-gap: 24px;
+    row-gap: 14px;
+    margin: 0;
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14.5px;
+    line-height: 1.6;
     color: #393939;
-    line-height: 1.65;
+  }
+  .utci-meta dt {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6E1712;
+    padding-top: 1px;
+  }
+  .utci-meta dd {
     margin: 0;
+    color: #262626;
   }
-  .utci-box-body strong { color: #161616; font-weight: 600; }
-  .utci-scale {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-top: 20px;
+  .utci-meta a {
+    color: #6E1712;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    word-break: break-word;
   }
-  @media (max-width: 700px) { .utci-scale { grid-template-columns: repeat(2, 1fr); } }
-  .utci-band {
-    padding: 10px 12px;
-    border-radius: 2px;
-    color: #161616;
+  .utci-inputs {
+    margin: 6px 0 0;
+    padding-left: 20px;
+    color: #262626;
     font-family: 'IBM Plex Sans', sans-serif;
   }
-  .utci-band .band-range {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.06em;
+  .utci-inputs li { margin: 2px 0; }
+  .utci-strip {
+    margin-top: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .utci-strip-bar {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .utci-band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 4px;
+    min-width: 0;
+    line-height: 1.15;
+  }
+  .utci-band .ub-label {
+    font-size: 10.5px;
     font-weight: 600;
-    margin-bottom: 4px;
+    color: inherit;
   }
-  .utci-band .band-name {
-    font-size: 12.5px;
-    line-height: 1.35;
+  .utci-band .ub-label em {
+    font-style: italic;
     font-weight: 500;
+    opacity: 0.85;
   }
-  .utci-band.b1 { background: #fff2b0; }
+  .utci-band .ub-range {
+    font-size: 9.5px;
+    font-weight: 500;
+    opacity: 0.85;
+    margin-top: 2px;
+    color: inherit;
+    white-space: nowrap;
+  }
+  .utci-band.c5 { background: #1e3a5f; color: #ffffff; }
+  .utci-band.c4 { background: #2b5484; color: #ffffff; }
+  .utci-band.c3 { background: #4a7bb0; color: #ffffff; }
+  .utci-band.c2 { background: #8fb2d4; }
+  .utci-band.c1 { background: #cddceb; }
+  .utci-band.b1 { background: #f2ecd6; }
   .utci-band.b2 { background: #fde047; }
   .utci-band.b3 { background: #f59e0b; color: #ffffff; }
   .utci-band.b4 { background: #c2410c; color: #ffffff; }
   .utci-band.b5 { background: #7f1d1d; color: #ffffff; }
+
+  /* Copernicus ThermalTrace screenshot */
+  .thermal-figure {
+    margin: 24px 0 44px;
+    max-width: 980px;
+  }
+  .thermal-figure a {
+    display: block;
+    padding: 8px;
+    background: #ffffff;
+    border: 1px solid #ececec;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .thermal-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+  }
+  .thermal-figure figcaption {
+    margin-top: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: #6b3f36;
+    line-height: 1.55;
+    text-align: center;
+  }
 
   /* Panes panel */
   .panes-section { margin-top: 20px; margin-bottom: 100px; }
@@ -448,22 +570,23 @@
   .clock-block { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
   .clock-digital {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 42px; font-weight: 500;
+    font-size: 26px; font-weight: 500;
     color: #161616; letter-spacing: 0.02em;
     line-height: 1; font-variant-numeric: tabular-nums;
-    min-width: 220px;
   }
   .clock-digital .ampm {
-    font-size: 20px; color: #6f6f6f; margin-left: 6px; letter-spacing: 0.05em;
+    font-size: 14px; color: #6f6f6f; margin-left: 4px; letter-spacing: 0;
   }
   .play-btn {
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: #161616;
-    background: transparent; border: 1px solid #161616;
-    padding: 10px 18px; cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0; text-transform: none; color: #6E1712;
+    background: transparent; border: 1.5px solid #6E1712;
+    border-radius: 3px;
+    padding: 8px 20px; cursor: pointer;
     transition: background .12s, color .12s;
   }
-  .play-btn:hover { background: #161616; color: #fff; }
+  .play-btn:hover { background: #6E1712; color: #fff; }
   .hour-scrubber {
     display: block; width: 100%;
     margin: 4px 0 24px; -webkit-appearance: none; appearance: none;
@@ -502,7 +625,9 @@
   .panes-legend .ref-sw {
     display: inline-block; width: 22px; height: 0; border-top: 2px dashed #8a0a0a;
   }
-  .panes-legend .ref-sw.very { border-top-color: #d04a3a; }
+  .panes-legend .ref-sw.very     { border-top-color: #d04a3a; }
+  .panes-legend .ref-sw.strong   { border-top-color: #ff832b; }
+  .panes-legend .ref-sw.moderate { border-top-color: #f1c21b; }
   .panes-legend .sep {
     display: inline-block; width: 1px; height: 20px;
     background: rgba(0,0,0,0.14); margin: 0 4px;
@@ -521,8 +646,8 @@
 
   /* Insights section */
   .insight-section { margin-top: 90px; }
-  .insight-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-  .insight-subtitle { margin-bottom: 20px; font-size: 15px; color: #393939; line-height: 1.55; max-width: 900px; }
+  .insight-title { margin-bottom: 6px; }
+  .insight-subtitle { margin-bottom: 20px; }
   .insight-subtitle em { font-style: normal; font-weight: 600; color: #161616; }
   .insight-finding {
     font-family: 'IBM Plex Sans', sans-serif;
@@ -547,26 +672,109 @@
     display: flex; align-items: flex-start; justify-content: space-between;
     gap: 24px; margin-bottom: 20px; flex-wrap: wrap;
   }
+  /* Chart controls: right-aligned row above the chart (matches buildings viz) */
+  .chart-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    margin: 16px 0 18px;
+    flex-wrap: wrap;
+  }
+  .chart-controls.chart-controls-split {
+    justify-content: space-between;
+  }
+  /* Title + toggle on one line: chart title left, toggle(s) right */
+  .title-with-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .title-with-toggle .insight-title,
+  .title-with-toggle .panes-title,
+  .title-with-toggle .warming-chart-title {
+    margin: 0;
+    flex: 1 1 auto;
+  }
+  .title-with-toggle .city-toggle,
+  .title-with-toggle .chart-controls-cluster {
+    flex: 0 0 auto;
+    margin: 0 0 0 auto;
+    align-self: center;
+  }
+  /* Subtitle + toggle on one line: subtitle left, toggle(s) right */
+  .subtitle-with-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .subtitle-with-toggle .insight-subtitle {
+    margin: 0;
+    flex: 1 1 auto;
+    max-width: none;
+  }
+  .subtitle-with-toggle .city-toggle {
+    flex: 0 0 auto;
+    margin: 0 0 0 auto;
+    align-self: flex-start;
+  }
+  .subtitle-with-toggle .chart-controls-cluster {
+    flex: 0 0 auto;
+    margin: 0 0 0 auto;
+    align-self: flex-start;
+  }
+  .chart-controls-cluster {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
   .insight-header-left { flex: 1 1 500px; min-width: 0; }
   .insight-header-left .insight-title { margin-bottom: 6px; }
   .insight-header-left .insight-subtitle { margin-bottom: 0; }
 
-  /* City toggle */
-  .city-toggle {
-    display: inline-flex; border: 1px solid #161616; border-radius: 2px;
-    overflow: hidden; margin-bottom: 24px;
+  /* City toggle — shared across panes/calendar/clocks/buildings */
+  .city-toggle,
+  .wcom-city-toggle {
+    display: inline-flex;
+    border: 1.5px solid #6E1712;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0;
   }
-  .city-toggle.city-toggle-right { margin-bottom: 0; flex: 0 0 auto; align-self: flex-start; }
-  .city-toggle button {
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: #161616;
-    background: transparent; border: none; border-right: 1px solid #161616;
-    padding: 9px 16px; cursor: pointer;
+  .city-toggle.city-toggle-right { flex: 0 0 auto; align-self: flex-start; }
+  .city-toggle button,
+  .wcom-city-toggle button {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #6E1712;
+    background: transparent;
+    border: none;
+    border-right: 1px solid #6E1712;
+    padding: 8px 16px;
+    cursor: pointer;
     transition: background .12s, color .12s;
   }
-  .city-toggle button:last-child { border-right: none; }
-  .city-toggle button.active { background: #161616; color: #fff; }
-  .city-toggle button:hover:not(.active) { background: #f4f4f4; }
+  .city-toggle button:last-child,
+  .wcom-city-toggle button:last-child { border-right: none; }
+  .city-toggle button.active,
+  .wcom-city-toggle button.active {
+    background: #6E1712;
+    color: #ffffff;
+  }
+  .city-toggle button:hover:not(.active),
+  .wcom-city-toggle button:hover:not(.active) {
+    background: #f7ede9;
+  }
 
   /* Calendar (insight 1) — two panels side-by-side, sized like old-version */
   .cal-grid-2 {
@@ -582,9 +790,11 @@
   .cal-panel { min-width: 0; }
   .cal-panel-title {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px; font-weight: 600; color: #161616;
-    letter-spacing: 0.02em; margin-bottom: 6px;
+    font-size: 18px; font-weight: 700; color: #161616;
+    letter-spacing: -0.005em; margin-bottom: 8px;
   }
+  .cal-panel.t2m  .cal-panel-title { color: #b57000; }
+  .cal-panel.utci .cal-panel-title { color: #c0382f; }
   .cal-stat-row {
     display: flex; align-items: baseline; gap: 12px;
     margin: 6px 0 14px;
@@ -599,7 +809,7 @@
   }
   .cal-stat-num.t2m   { color: #b45309; }
   .cal-stat-num.utci  { color: #b91c1c; }
-  .cal-stat-num.night { color: #2563eb; }
+  .cal-stat-num.night { color: #b57000; }
   .cal-stat-lbl {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 13px; color: #525252;
@@ -648,19 +858,18 @@
   .cal-panel.utci .cal-cell.hot     { background: #dc2626; border-color: #7f1d1d; }
   .cal-panel.utci .cal-cell.hot.med  { background: #b91c1c; }
   .cal-panel.utci .cal-cell.hot.high { background: #7f1d1d; }
-  /* Tropical-night dot — dots only, three tiers of blue.
-     Base = light blue at threshold, mid at +2°, deep at +4°.
-     Same colour ramp as Insight 2 in old-version.html. */
+  /* Warm-night dot — three tiers of yellow.
+     Base = pale yellow at threshold, mid at +2°, deep amber at +4°. */
   .cal-cell.night::after {
     content: '';
     position: absolute;
     right: 2px; bottom: 2px;
     width: 5px; height: 5px;
     border-radius: 50%;
-    background: #93c5fd;
+    background: #fde68a;
   }
-  .cal-cell.night.night-med::after  { background: #3b82f6; }
-  .cal-cell.night.night-high::after { background: #1d4ed8; }
+  .cal-cell.night.night-med::after  { background: #f1c21b; }
+  .cal-cell.night.night-high::after { background: #b57000; }
   .cal-legend {
     display: flex; flex-wrap: wrap; gap: 14px;
     font-family: 'IBM Plex Sans', sans-serif; font-size: 12px;
@@ -718,74 +927,98 @@
     margin-bottom: 14px;
   }
 
-  /* Dual-ring clocks (insight 2) */
+  /* Insight 2 clocks — two per city (Recorded / Felt), airy no-face design */
   .clocks-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
-    max-width: 980px; margin-top: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 90px;
+    max-width: 980px;
+    margin: 32px auto 8px;
+    flex-wrap: wrap;
   }
-  @media (max-width: 900px) { .clocks-grid { grid-template-columns: repeat(2, 1fr); } }
-  .clock-card { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .clocks-caption {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: #6b3f36;
+    text-align: center;
+    max-width: 980px;
+    margin: 8px auto 48px;
+  }
+  .clock-card {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 14px;
+    width: 220px;
+    max-width: 260px;
+  }
   .clock-card-title {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 18px; font-weight: 600; color: #161616;
-    letter-spacing: -0.01em;
+    font-size: 15px; font-weight: 600;
+    letter-spacing: 0;
   }
+  .clock-card-title.rec  { color: #b57000; }
+  .clock-card-title.felt { color: #c0382f; }
+
   .clock-svg {
-    width: 100%; max-width: 220px; height: auto; display: block; overflow: visible;
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    display: block;
+    overflow: visible;
+    background: transparent;
   }
-  .clock-svg .clock-face { fill: #ffffff; stroke: #c6c6c6; stroke-width: 1; }
-  .clock-svg .ring-track { fill: none; stroke: #f4f4f4; stroke-width: 12; }
-  .clock-svg .clock-hour-tick { stroke: #6f6f6f; stroke-width: 1; }
+  .clock-svg .ring-track {
+    fill: none;
+    stroke: #d6c5bc;
+    stroke-width: 1;
+  }
+  .clock-svg .clock-tick {
+    stroke: #b3a49b;
+    stroke-width: 1;
+    stroke-linecap: round;
+  }
+  .clock-svg .clock-tick.cardinal {
+    stroke: #6b3f36;
+    stroke-width: 1.6;
+  }
   .clock-svg .clock-hour-label {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 15px; fill: #262626; font-weight: 600;
-  }
-  .clock-svg .seg-actual { fill: none; stroke: #f1c21b; stroke-width: 12; stroke-linecap: butt; }
-  .clock-svg .seg-felt   { fill: none; stroke: #ff832b; stroke-width: 12; stroke-linecap: butt; }
-  .clock-center-count {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 16px; font-weight: 600;
-    fill: #161616; text-anchor: middle;
-    font-variant-numeric: tabular-nums;
-  }
-  .clock-center-count.actual { fill: #b45309; }
-  .clock-center-count.felt   { fill: #c2410c; }
-  .clock-center-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 8.5px; fill: #6f6f6f; text-anchor: middle;
-    letter-spacing: 0.06em; text-transform: uppercase;
-  }
-  .clock-center-heading {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 8.5px; fill: #6f6f6f; text-anchor: middle;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    font-weight: 500;
-  }
-  .clock-center-stat {
-    font-family: 'IBM Plex Sans', sans-serif;
-    text-anchor: middle;
-    font-size: 12px;
-  }
-  .clock-center-stat .stat-lbl {
-    fill: #262626;
-    font-weight: 500;
-  }
-  .clock-center-stat .stat-val {
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    fill: #8a6b5f;
     font-weight: 600;
-    font-size: 13.5px;
+    letter-spacing: 0.02em;
   }
-  .clock-center-stat .stat-val.actual { fill: #b45309; }
-  .clock-center-stat .stat-val.felt   { fill: #c2410c; }
-  .clock-legend-row {
-    display: flex; gap: 22px; align-items: center;
-    flex-wrap: wrap; margin-top: 8px;
-    font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
-    color: #393939;
+  .clock-svg .seg-recorded,
+  .clock-svg .seg-felt {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: clock-arc-sweep 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
   }
-  .clock-legend-row .sw {
-    display: inline-block; width: 22px; height: 10px;
-    border-radius: 2px; margin-right: 6px; vertical-align: middle;
+  .clock-svg .seg-recorded { stroke: #f1c21b; }
+  .clock-svg .seg-felt     { stroke: #e8202a; }
+  @keyframes clock-arc-sweep {
+    to { stroke-dashoffset: 0; }
+  }
+  .clock-svg .clock-count {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.005em;
+  }
+  .clock-svg .clock-count.zero {
+    fill: #c6b7ae;
+  }
+  .clock-card.rec  .clock-svg .clock-count.active { fill: #b57000; }
+  .clock-card.felt .clock-svg .clock-count.active { fill: #c0382f; }
+  .clock-svg .clock-count-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    fill: #8a6b5f;
+    font-weight: 500;
   }
   .clock-legend-row .sw.actual { background: #f1c21b; }
   .clock-legend-row .sw.felt   { background: #ff832b; }
@@ -798,20 +1031,7 @@
   }
   .wcom-controls-left  { display: flex; align-items: center; gap: 14px; }
   .wcom-controls-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-  .wcom-city-toggle {
-    display: inline-flex; border: 1px solid #161616; border-radius: 2px;
-    overflow: hidden;
-  }
-  .wcom-city-toggle button {
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: #161616;
-    background: transparent; border: none; border-right: 1px solid #161616;
-    padding: 8px 12px; cursor: pointer;
-    transition: background .12s, color .12s;
-  }
-  .wcom-city-toggle button:last-child { border-right: none; }
-  .wcom-city-toggle button.active { background: #161616; color: #fff; }
-  .wcom-city-toggle button:hover:not(.active) { background: #f4f4f4; }
+  /* wcom-city-toggle now inherits from the shared .city-toggle rule above */
   .wcom-clock-block {
     display: flex; align-items: center; gap: 10px;
   }
@@ -822,7 +1042,7 @@
     font-variant-numeric: tabular-nums;
   }
   .wcom-clock-digital .ampm {
-    font-size: 14px; color: #6f6f6f; margin-left: 4px; letter-spacing: 0.05em;
+    font-size: 14px; color: #6f6f6f; margin-left: 4px; letter-spacing: 0;
   }
 
   .wcom-buildings {
@@ -1053,6 +1273,16 @@
     gap: 20px;
     padding: 32px 48px;
   }
+  .exhibit-panel-title {
+    font-family: 'Playfair Display', 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: clamp(36px, 4.6vw, 64px);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: #6E1712;
+    margin: 0;
+    text-align: center;
+  }
   .exhibit-panel-image {
     max-height: 72vh;
     max-width: 100%;
@@ -1179,15 +1409,15 @@
 
   @media (max-width: 900px) {
     .exhibit-panel-inner { padding: 24px; }
+    .exhibit-panel-title { font-size: 34px; }
     .exhibit-panel-image { max-height: 60vh; }
     .exhibit-carousel { --thumb-w: 44px; --thumb-h: 68px; --thumb-gap: 8px; gap: 12px; }
   }
 
   /* Data Physicalisation */
   .physicalisation-section {
-    margin-top: 120px;
-    padding-top: 40px;
-    border-top: 1px solid #ececec;
+    margin-top: 60px;
+    padding-top: 0;
     max-width: 980px;
   }
   .phys-eyebrow {
@@ -1195,11 +1425,24 @@
     font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
     color: #c0382f; margin-bottom: 8px; font-weight: 600;
   }
+  .phys-title {
+    font-family: 'Playfair Display', 'DM Serif Display', serif;
+    font-weight: 800;
+    font-size: clamp(36px, 4.6vw, 64px);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: #6E1712;
+    margin: 0 0 14px 0;
+  }
   .phys-h2 {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 30px; font-weight: 600;
-    color: #161616; letter-spacing: -0.01em;
-    margin-bottom: 36px; line-height: 1.2;
+    font-size: clamp(18px, 1.7vw, 24px);
+    font-weight: 600;
+    line-height: 1.35;
+    color: #6E1712;
+    letter-spacing: 0;
+    margin: 0 0 36px 0;
+    max-width: 54ch;
   }
   .phys-step {
     display: grid;
@@ -1460,27 +1703,75 @@
   /* Shared tooltip */
   #tt {
     position: fixed; pointer-events: none; z-index: 100;
-    background: #161616; color: #f5f5f5;
+    background: #ffffff; color: #262626;
     font-family: 'IBM Plex Sans', sans-serif; font-size: 12.5px;
-    line-height: 1.45; padding: 9px 12px; border-radius: 2px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-    opacity: 0; transition: opacity 0.12s ease; max-width: 230px;
+    line-height: 1.45; padding: 12px 14px; border-radius: 3px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+    opacity: 0; transition: opacity 0.12s ease;
+    min-width: 200px; max-width: 260px;
   }
   #tt.on { opacity: 1; }
-  #tt .tt-h {
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: #f4a8a8; font-weight: 600; margin-bottom: 4px;
+  #tt .tt-head {
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #ececec;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  #tt .tt-time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px; color: #161616; font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  #tt .tt-date {
+    font-size: 12.5px; color: #161616; font-weight: 600;
+  }
+  #tt .tt-city {
+    font-size: 12.5px; color: #6E1712; font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  #tt .tt-conn {
+    font-size: 12px; color: #a8a8a8; font-weight: 400;
+    margin: 0 5px;
   }
   #tt .tt-row {
     display: flex; justify-content: space-between; gap: 14px;
     font-feature-settings: "tnum";
+    padding: 2px 0;
   }
-  #tt .tt-row .lbl { color: #a8a8a8; }
-  #tt .tt-row .val { color: #fff; font-weight: 500; }
-  #tt .tt-row.utci .val { color: #f4a8a8; }
-  #tt .tt-gap {
-    margin-top: 4px; padding-top: 4px;
-    border-top: 1px solid rgba(255,255,255,0.12);
+  #tt .tt-row .lbl { color: #262626; font-weight: 500; }
+  #tt .tt-row .val { color: #161616; font-weight: 600; }
+  #tt .tt-row.rec .lbl,
+  #tt .tt-row.rec .val  { color: #b57000; }
+  #tt .tt-row.felt .lbl,
+  #tt .tt-row.felt .val { color: #c0382f; }
+  #tt .tt-scale {
+    position: relative;
+    height: 14px;
+    margin: 8px 0 4px;
+  }
+  #tt .tt-scale-track {
+    position: absolute; left: 0; right: 0; top: 50%;
+    height: 2px; background: #ececec; transform: translateY(-50%);
+    border-radius: 1px;
+  }
+  #tt .tt-scale-bar {
+    position: absolute; top: 50%;
+    height: 2px; transform: translateY(-50%);
+    border-radius: 1px;
+  }
+  #tt .tt-scale-dot {
+    position: absolute; top: 50%;
+    width: 8px; height: 8px; border-radius: 50%;
+    transform: translate(-50%, -50%);
+    border: 1.5px solid #fff;
+  }
+  #tt .tt-scale-dot.rec  { background: #f59e0b; }
+  #tt .tt-scale-dot.felt { background: #e8202a; }
+  #tt .tt-gap-row {
+    font-size: 11.5px; font-weight: 600;
+    text-align: right; margin-top: 2px;
   }
 
   /* ============================================================
@@ -1542,6 +1833,7 @@
     #warmingChart g > text[fill='#c0382f'] { font-size: 22px; font-weight: 700; }
     .warming-legend { font-size: 11px; gap: 12px; }
     .apr-source-right { font-size: 10px; }
+    .chart-source { font-size: 11px; }
 
     /* Dumbbell charts — scale up in-SVG type so the °C ticks and month labels
        stay legible when the chart is <= 340 px wide. */
@@ -1555,19 +1847,20 @@
     .warming-lede, .story-para { font-size: 15px; line-height: 1.65; }
 
     /* UTCI box */
-    .utci-box { padding: 18px 18px; }
-    .utci-box-title { font-size: 16px; }
-    .utci-box-body { font-size: 13.5px; }
-    .utci-scale { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .utci-band .band-name { font-size: 11.5px; }
+    .utci-box { padding: 0; }
+    .utci-box-title { font-size: 22px; margin-bottom: 14px; }
+    .utci-meta { grid-template-columns: 1fr; row-gap: 4px; font-size: 13.5px; }
+    .utci-meta dt { padding-top: 10px; }
+    .utci-band .ub-label { font-size: 9.5px; }
+    .utci-band .ub-range { font-size: 8.5px; }
 
     /* Panes dumbbell grid */
     .panes-title, .insight-title { font-size: 18px; }
     .panes-subtitle, .insight-subtitle { font-size: 13.5px; }
     .panes-grid { grid-template-columns: 1fr; gap: 22px; }
     .pane-card-title { font-size: 18px; }
-    .clock-digital { font-size: 30px; min-width: 0; }
-    .clock-digital .ampm { font-size: 15px; }
+    .clock-digital { font-size: 22px; }
+    .clock-digital .ampm { font-size: 12px; }
     .panes-controls { gap: 12px; }
     .panes-legend { font-size: 12px; gap: 8px; }
 
@@ -1581,15 +1874,17 @@
 
     /* Clocks */
     .clocks-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
-    .clock-card-title { font-size: 15px; }
-    .clock-svg { max-width: 170px; }
-    .clock-halfday-toggle button { font-size: 10px; padding: 8px 12px; }
-    .clocks-supertitle { font-size: 11px; }
+    .clocks-grid { gap: 32px; }
+    .clock-card { max-width: 200px; }
+    .clock-card-title { font-size: 14px; }
+    .clock-svg { max-width: 180px; }
+    .clock-svg .clock-count { font-size: 17px; }
 
     /* Buildings */
     .wcom-controls { gap: 12px; }
     .wcom-controls-right { align-items: flex-end; gap: 8px; }
     .wcom-clock-digital { font-size: 22px; }
+    .wcom-clock-digital .ampm { font-size: 12px; }
     .wcom-city-toggle button { padding: 7px 9px; font-size: 10px; }
     .wcom-panel { grid-template-columns: 1fr; gap: 22px; }
     .wcom-buildings { grid-template-columns: 1fr 1fr; gap: 10px; max-width: 100%; }
@@ -1607,6 +1902,7 @@
 
     /* Physicalisation */
     .physicalisation-section { margin-top: 60px; padding-top: 28px; }
+    .phys-title { font-size: 34px; margin-bottom: 10px; }
     .phys-h2 { font-size: 22px; margin-bottom: 22px; }
     .phys-step { grid-template-columns: 1fr; gap: 4px; padding: 22px 0; }
     .phys-step-num { font-size: 24px; }

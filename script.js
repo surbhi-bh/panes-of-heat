@@ -278,7 +278,9 @@ window.__runWhenDataReady(function () {
     }
 
     [
-      { temp: 40, label: 'Very strong heat', color: '#d04a3a' },
+      { temp: 26, label: 'Moderate heat',    color: '#f1c21b' },
+      { temp: 32, label: 'Strong heat',      color: '#ff832b' },
+      { temp: 38, label: 'Very strong heat', color: '#d04a3a' },
       { temp: 46, label: 'Extreme heat',     color: '#8a0a0a' }
     ].forEach(ref => {
       const yR = y(ref.temp);
@@ -320,12 +322,12 @@ window.__runWhenDataReady(function () {
       if (firstIdx < 0) return;
       const midX = (xForIdx(firstIdx) + xForIdx(lastIdx)) / 2;
       const lbl = document.createElementNS(NS, 'text');
-      lbl.setAttribute('x', midX); lbl.setAttribute('y', baselineY + 22);
+      lbl.setAttribute('x', midX); lbl.setAttribute('y', baselineY + 24);
       lbl.setAttribute('text-anchor', 'middle');
       lbl.setAttribute('font-family', "IBM Plex Sans, sans-serif");
-      lbl.setAttribute('font-weight', 600);
-      lbl.setAttribute('font-size', 13);
-      lbl.setAttribute('fill', '#161616');
+      lbl.setAttribute('font-weight', 500);
+      lbl.setAttribute('font-size', 14);
+      lbl.setAttribute('fill', '#6f6f6f');
       lbl.textContent = m;
       staticLayer.appendChild(lbl);
     });
@@ -440,7 +442,7 @@ window.__runWhenDataReady(function () {
     let display = h % 12;
     if (display === 0) display = 12;
     document.getElementById('clockDigital').innerHTML =
-      String(display).padStart(2, '0') + ':30 <span class="ampm">' + suffix + '</span>';
+      String(display).padStart(2, '0') + ':30<span class="ampm">' + suffix + '</span>';
   }
 
   const HOUR_MS = 900;
@@ -451,11 +453,13 @@ window.__runWhenDataReady(function () {
       state.lastTick = ts;
       drawAll();
       updateClock();
+      refreshTip();
     }
     requestAnimationFrame(tick);
   }
 
   const tt = document.getElementById('tt');
+  const hoverState = { city: null, i: -1, x: 0, y: 0 };
   function showTip(hit, i, evt) {
     if (!hit) return;
     const u = hit.d.utci[i];
@@ -463,27 +467,63 @@ window.__runWhenDataReady(function () {
     if (u == null && t == null) { hideTip(); return; }
     const gap = (u != null && t != null) ? (u - t) : null;
     const gapColor = (gap == null) ? '#fff' : (gap >= 0 ? '#e8202a' : '#1f6fb0');
-    const gapTxt = (gap == null) ? '' : (gap >= 0 ? '+' : '') + gap.toFixed(1) + '°C';
+    const gapTxt = (gap == null) ? '' : (gap >= 0 ? '+' : '') + gap.toFixed(1) + '°';
     const h = hit.hour;
     const suffix = h < 12 ? 'AM' : 'PM';
     let display = h % 12;
     if (display === 0) display = 12;
     const timeStr = String(display).padStart(2,'0') + ':30 ' + suffix;
+    const dateStr = hit.fmtDay(i);
+    var recTxt = (t != null ? t.toFixed(1) + '°' : '—');
+    var feltTxt = (u != null ? u.toFixed(1) + '°' : '—');
+    var feltCooler = (gap != null && gap < 0);
+    var feltDotColor = feltCooler ? '#1f6fb0' : '#e8202a';
+    var feltTextColor = feltCooler ? '#1f6fb0' : '#c0382f';
+    var scaleHTML = '';
+    if (u != null && t != null) {
+      var lo = Math.min(t, u), hi = Math.max(t, u);
+      var range = Math.max(6, hi - lo + 4);
+      var mid = (lo + hi) / 2;
+      var axLo = mid - range / 2, axHi = mid + range / 2;
+      var pctT = ((t - axLo) / (axHi - axLo)) * 100;
+      var pctU = ((u - axLo) / (axHi - axLo)) * 100;
+      var barLeft = Math.min(pctT, pctU), barRight = Math.max(pctT, pctU);
+      scaleHTML =
+        '<div class="tt-scale">' +
+          '<div class="tt-scale-track"></div>' +
+          '<div class="tt-scale-bar" style="left:' + barLeft + '%;width:' + (barRight - barLeft) + '%;background:' + gapColor + ';"></div>' +
+          '<div class="tt-scale-dot rec" style="left:' + pctT + '%;"></div>' +
+          '<div class="tt-scale-dot felt" style="left:' + pctU + '%;background:' + feltDotColor + ';"></div>' +
+        '</div>';
+    }
     tt.innerHTML =
-      '<div class="tt-h">' + hit.city + ' &middot; ' + hit.fmtDay(i) + ' &middot; ' + timeStr + '</div>' +
-      '<div class="tt-row utci"><span class="lbl">Feels-like (UTCI)</span><span class="val">' + (u != null ? u.toFixed(1) + '°C' : '—') + '</span></div>' +
-      '<div class="tt-row"><span class="lbl">Actual (T2M)</span><span class="val">' + (t != null ? t.toFixed(1) + '°C' : '—') + '</span></div>' +
-      (gap != null ? '<div class="tt-row tt-gap"><span class="lbl">Gap</span><span class="val" style="color:' + gapColor + ';">' + gapTxt + '</span></div>' : '');
+      '<div class="tt-head">' +
+        '<span class="tt-time">' + timeStr + '</span>' +
+        '<span class="tt-conn">on</span>' +
+        '<span class="tt-date">' + dateStr + '</span>' +
+        '<span class="tt-conn">in</span>' +
+        '<span class="tt-city">' + hit.city + '</span>' +
+      '</div>' +
+      '<div class="tt-row rec"><span class="lbl">Recorded</span><span class="val">' + recTxt + '</span></div>' +
+      '<div class="tt-row felt" style="color:' + feltTextColor + ';"><span class="lbl" style="color:' + feltTextColor + ';">Felt</span><span class="val" style="color:' + feltTextColor + ';">' + feltTxt + '</span></div>' +
+      scaleHTML +
+      (gap != null ? '<div class="tt-gap-row" style="color:' + gapColor + ';">' + gapTxt + ' gap</div>' : '');
     tt.classList.add('on');
+    if (evt) { hoverState.x = evt.clientX; hoverState.y = evt.clientY; }
     const pad = 14;
     const r = tt.getBoundingClientRect();
-    let x = evt.clientX + pad, yy = evt.clientY + pad;
-    if (x + r.width  > window.innerWidth - 8)  x = evt.clientX - r.width - pad;
-    if (yy + r.height > window.innerHeight - 8) yy = evt.clientY - r.height - pad;
+    let x = hoverState.x + pad, yy = hoverState.y + pad;
+    if (x + r.width  > window.innerWidth - 8)  x = hoverState.x - r.width - pad;
+    if (yy + r.height > window.innerHeight - 8) yy = hoverState.y - r.height - pad;
     tt.style.left = Math.max(8, x) + 'px';
     tt.style.top  = Math.max(8, yy) + 'px';
   }
-  function hideTip() { tt.classList.remove('on'); }
+  function hideTip() { tt.classList.remove('on'); hoverState.city = null; hoverState.i = -1; }
+  function refreshTip() {
+    if (!hoverState.city || hoverState.i < 0) return;
+    const ctx = cityCtx[hoverState.city];
+    if (ctx && ctx.hit) showTip(ctx.hit, hoverState.i, null);
+  }
 
   svgs.forEach(svg => {
     const city = svg.dataset.city;
@@ -491,7 +531,11 @@ window.__runWhenDataReady(function () {
       const target = e.target;
       if (target && target.classList && target.classList.contains('bar-hit')) {
         const i = parseInt(target.dataset.index, 10);
-        if (Number.isFinite(i)) showTip(cityCtx[city].hit, i, e);
+        if (Number.isFinite(i)) {
+          hoverState.city = city;
+          hoverState.i = i;
+          showTip(cityCtx[city].hit, i, e);
+        }
       } else hideTip();
     });
     svg.addEventListener('mouseleave', hideTip);
@@ -573,21 +617,16 @@ window.__runWhenDataReady(function () {
             else if (v > dayThr + 3) cell.classList.add('med');
             hotN++;
           }
-          // Tropical-night dot — same rule as Insight 2 in old-version:
-          // > 25° at night. T2M panel uses night T2M ("nt"); UTCI panel uses
-          // night UTCI ("nu"). Three-tier severity.
+          // Warm-night dot — city's night threshold, applied to the night-window
+          // extreme (7:30 PM – 7:30 AM IST). T2M panel uses night T2M ("nt");
+          // UTCI panel uses night UTCI ("nu"). Three-tier severity.
           const nv = rec[nightKey];
-          const TROP_THR = 25;
-          if (nv != null && nv > TROP_THR) {
+          if (nv != null && nv > nightThr) {
             cell.classList.add('night');
-            if (nv > TROP_THR + 4)      cell.classList.add('night-high');
-            else if (nv > TROP_THR + 2) cell.classList.add('night-med');
+            if (nv > nightThr + 4)      cell.classList.add('night-high');
+            else if (nv > nightThr + 2) cell.classList.add('night-med');
             nightN++;
           }
-          const bits = [];
-          if (v != null) bits.push('day ' + v.toFixed(1) + '°');
-          if (nv != null) bits.push('night ' + nv.toFixed(1) + '°');
-          cell.title = rec.d + (bits.length ? ' — ' + bits.join(', ') : '');
         }
         grid.appendChild(cell);
       }
@@ -600,8 +639,8 @@ window.__runWhenDataReady(function () {
   function render(city) {
     const days = CAL[city] || [];
     const thr = CITY_THRESHOLDS[city] || { day: 40, night: 30 };
-    // T2M panel: day = day-max T2M, night dot = night-max T2M > 25°.
-    // UTCI panel: day = day-max UTCI, night dot = night-max UTCI > 25°.
+    // Recorded panel: day = day-max T2M > city day cutoff; night dot = night-max T2M > city night cutoff.
+    // Felt panel: same rules on UTCI (day = du, night = nu).
     const rT2M  = buildPanel(monthsT2M,  days, 'dt', 'nt', thr.day, thr.night);
     const rUTCI = buildPanel(monthsUTCI, days, 'du', 'nu', thr.day, thr.night);
     countT2M.textContent  = rT2M.hotN;
@@ -619,94 +658,158 @@ window.__runWhenDataReady(function () {
   render('delhi');
 });
 
-/* ============ Insight 2 — dual-ring clocks (Actual + Feels-like) ============ */
+/* ============ Insight 2 — dual-ring clocks (June average, Recorded vs Felt) ============ */
 window.__runWhenDataReady(function () {
-  const extra = JSON.parse(document.getElementById('extraPayload').textContent);
-  const CLOCK = extra.clock;
+  const panes = JSON.parse(document.getElementById('panesPayload').textContent);
   const CITIES = ['delhi', 'kolkata', 'mumbai', 'chennai'];
   const CITY_DISPLAY = { delhi: 'Delhi', kolkata: 'Kolkata', mumbai: 'Mumbai', chennai: 'Chennai' };
+  const CITY_THR = {
+    delhi:   { day: 40, night: 30 },
+    kolkata: { day: 40, night: 30 },
+    mumbai:  { day: 37, night: 30 },
+    chennai: { day: 37, night: 30 }
+  };
   const NS = 'http://www.w3.org/2000/svg';
 
-  function drawDualClock(svg, tHours, uHours, half) {
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    const W = 220, H = 220;
-    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    const cx = W / 2, cy = H / 2;
-    const rActual = 60;   // inner ring — Actual (T2M)
-    const rFelt   = 88;   // outer ring — Feels-like (UTCI)
+  // Editorial "hottest month" per city — matches the climatological peak we're
+  // telling the story about, not the raw 2024 mean. (Delhi/Kolkata inland peak in
+  // June; Mumbai/Chennai coastal peak in May before the monsoon.)
+  const MONTH_NAMES = ['January','February','March','April','May','June',
+                       'July','August','September','October','November','December'];
+  const HOT_MONTH_INDEX = {
+    delhi:   5,  // June
+    kolkata: 3,  // April
+    mumbai:  4,  // May
+    chennai: 4   // May
+  };
+  const HOT_MONTH = {};    // city -> { month: 0-11, name: 'June' }
+  const MONTH_MEAN = {};   // city -> { t2m: [24], utci: [24] }
 
-    // Face
-    const face = document.createElementNS(NS, 'circle');
-    face.setAttribute('cx', cx); face.setAttribute('cy', cy);
-    face.setAttribute('r', 100); face.setAttribute('class', 'clock-face');
-    svg.appendChild(face);
+  CITIES.forEach(city => {
+    const cityD = panes.data[city];
+    const m = HOT_MONTH_INDEX[city];
+    HOT_MONTH[city] = { month: m, name: MONTH_NAMES[m] };
 
-    // Ring tracks (light grey background rings so viewer sees the full 12-h loop)
-    [rActual, rFelt].forEach(r => {
-      const track = document.createElementNS(NS, 'circle');
-      track.setAttribute('cx', cx); track.setAttribute('cy', cy);
-      track.setAttribute('r', r); track.setAttribute('class', 'ring-track');
-      svg.appendChild(track);
+    // Collect day indices for that month
+    const idxs = [];
+    cityD.days.forEach((d, i) => {
+      if (!d.startsWith('2024-')) return;
+      if (parseInt(d.slice(5, 7), 10) - 1 === m) idxs.push(i);
     });
 
+    // Per-hour means across the hottest month
+    const t2m = new Array(24).fill(null);
+    const utci = new Array(24).fill(null);
+    for (let h = 0; h < 24; h++) {
+      const bucket = cityD.hourly[String(h)];
+      let sT = 0, cT = 0, sU = 0, cU = 0;
+      idxs.forEach(i => {
+        const t = bucket.t2m[i];
+        const u = bucket.utci[i];
+        if (t != null) { sT += t; cT++; }
+        if (u != null) { sU += u; cU++; }
+      });
+      t2m[h]  = cT ? sT / cT : null;
+      utci[h] = cU ? sU / cU : null;
+    }
+    MONTH_MEAN[city] = { t2m, utci };
+  });
+
+  function hotHours(city, key) {
+    const thr = CITY_THR[city];
+    const series = MONTH_MEAN[city][key];
+    const out = [];
+    // Bucket h corresponds to h:30 IST. Day window is 7:30 AM – 7:30 PM IST → buckets 7..19.
+    for (let h = 0; h < 24; h++) {
+      const v = series[h];
+      if (v == null) continue;
+      const isDay = (h >= 7 && h <= 19);
+      const cutoff = isDay ? thr.day : thr.night;
+      if (v > cutoff) out.push(h);
+    }
+    return out;
+  }
+
+  // ---- Single-ring clock ----------------------------------------------------
+  // Design intent: no white face, no dial numerals, no centre digits.
+  // A thin dashed ring shows the 12-h loop; a bold coloured wedge highlights the
+  // hours that were too hot. The count is written LARGE beside the ring, not on it.
+  function drawClock(svg, hotHrs, colorClass, half) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    const W = 200, H = 200;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    const cx = W / 2, cy = H / 2;
+    const r = 78;
+
     function angleOf(hour) { return ((hour % 12) / 12) * 2 * Math.PI - Math.PI / 2; }
-    function arcStroke(radius, startHour, endHour) {
+    function arcPath(startHour, endHour) {
       const sweep = endHour - startHour;
       if (sweep >= 12 - 1e-6) {
-        // Full ring — draw as two half arcs
-        return 'M ' + (cx + radius) + ' ' + cy +
-               ' A ' + radius + ' ' + radius + ' 0 1 1 ' + (cx - radius) + ' ' + cy +
-               ' A ' + radius + ' ' + radius + ' 0 1 1 ' + (cx + radius) + ' ' + cy;
+        return 'M ' + (cx + r) + ' ' + cy +
+               ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx - r) + ' ' + cy +
+               ' A ' + r + ' ' + r + ' 0 1 1 ' + (cx + r) + ' ' + cy;
       }
       const sa = angleOf(startHour), ea = angleOf(endHour);
       const large = sweep > 6 ? 1 : 0;
-      const x1 = cx + radius * Math.cos(sa), y1 = cy + radius * Math.sin(sa);
-      const x2 = cx + radius * Math.cos(ea), y2 = cy + radius * Math.sin(ea);
+      const x1 = cx + r * Math.cos(sa), y1 = cy + r * Math.sin(sa);
+      const x2 = cx + r * Math.cos(ea), y2 = cy + r * Math.sin(ea);
       return 'M ' + x1 + ' ' + y1 +
-             ' A ' + radius + ' ' + radius + ' 0 ' + large + ' 1 ' + x2 + ' ' + y2;
+             ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2 + ' ' + y2;
     }
 
-    // 12 major ticks around the outermost ring, faint hour numerals
+    // Thin printed-dial ring
+    const track = document.createElementNS(NS, 'circle');
+    track.setAttribute('cx', cx); track.setAttribute('cy', cy);
+    track.setAttribute('r', r);
+    track.setAttribute('class', 'ring-track');
+    svg.appendChild(track);
+
+    // 12 tiny hour tick-marks — small lines just inside the ring instead of dots
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * 2 * Math.PI - Math.PI / 2;
-      const isMajor = (i % 3 === 0);
-      const rTickIn  = 95;
-      const rTickOut = 100;
-      const x1 = cx + rTickIn  * Math.cos(angle);
-      const y1 = cy + rTickIn  * Math.sin(angle);
-      const x2 = cx + rTickOut * Math.cos(angle);
-      const y2 = cy + rTickOut * Math.sin(angle);
+      const isCardinal = (i % 3 === 0);
+      const inLen  = isCardinal ? 5 : 3;
+      const rIn  = r - inLen - 8;
+      const rOut = r - 8;
       const tick = document.createElementNS(NS, 'line');
-      tick.setAttribute('x1', x1); tick.setAttribute('y1', y1);
-      tick.setAttribute('x2', x2); tick.setAttribute('y2', y2);
-      tick.setAttribute('class', 'clock-hour-tick');
-      if (isMajor) tick.setAttribute('stroke-width', '2');
+      tick.setAttribute('x1', cx + rIn  * Math.cos(angle));
+      tick.setAttribute('y1', cy + rIn  * Math.sin(angle));
+      tick.setAttribute('x2', cx + rOut * Math.cos(angle));
+      tick.setAttribute('y2', cy + rOut * Math.sin(angle));
+      tick.setAttribute('class', 'clock-tick' + (isCardinal ? ' cardinal' : ''));
       svg.appendChild(tick);
     }
-    // Numerals — anchored to the active half so the reader can see whether
-    // they're looking at the morning face (12 AM – 12 PM) or the evening face
-    // (12 PM – 12 AM). "12" on top = 12 AM in morning, 12 PM in evening;
-    // "6" on bottom flips the same way.
-    const suffix = (half === 'am') ? 'AM' : 'PM';
-    const labels = [
-      { text: '12' + suffix,         x: 0,  y: -1 },
-      { text: '3',                   x: 1,  y:  0 },
-      { text: '6' + suffix,          x: 0,  y:  1 },
-      { text: '9',                   x: -1, y:  0 }
-    ];
+
+    // Four hour numerals at 12 / 3 / 6 / 9 positions — outside the ring.
+    // 12 and 6 sit at the vertical anchors and stay bare, like a normal clock.
+    // The 3 and 9 positions carry the meridian so the reader can tell whether
+    // they're looking at the day face or the night face.
+    const isDay = (half === 'day');
+    const labels = isDay
+      ? [
+          { text: '12',   x: 0,  y: -1 },
+          { text: '3 PM', x: 1,  y:  0 },
+          { text: '6',    x: 0,  y:  1 },
+          { text: '9 AM', x: -1, y:  0 }
+        ]
+      : [
+          { text: '12',   x: 0,  y: -1 },
+          { text: '3 AM', x: 1,  y:  0 },
+          { text: '6',    x: 0,  y:  1 },
+          { text: '9 PM', x: -1, y:  0 }
+        ];
     labels.forEach(pos => {
-      const r = 116;
+      const rr = 96;
       const t = document.createElementNS(NS, 'text');
-      t.setAttribute('x', cx + pos.x * r);
-      t.setAttribute('y', cy + pos.y * r + 5);
+      t.setAttribute('x', cx + pos.x * rr);
+      t.setAttribute('y', cy + pos.y * rr + 4);
       t.setAttribute('text-anchor', 'middle');
       t.setAttribute('class', 'clock-hour-label');
       t.textContent = pos.text;
       svg.appendChild(t);
     });
 
-    // Build contiguous runs of hot hours on a 24-h loop, unwrapped so wrap-around
-    // sequences (e.g. 22→23→0→1) render as a single arc.
+    // Contiguous hot-hour runs on a 24-h loop
     function buildRuns(hotHours) {
       const hotSet = new Set(hotHours);
       const hot = [];
@@ -727,93 +830,106 @@ window.__runWhenDataReady(function () {
       }
       return runs;
     }
+    const runs = buildRuns(hotHrs || []);
+    runs.forEach(run => {
+      const seg = document.createElementNS(NS, 'path');
+      seg.setAttribute('class', colorClass);
+      const sweep = Math.min(run.len, 12);
+      seg.setAttribute('d', arcPath(run.start, run.start + sweep));
+      svg.appendChild(seg);
+    });
 
-    function emitArcs(radius, hours, cls) {
-      const runs = buildRuns(hours);
-      runs.forEach(r => {
-        const seg = document.createElementNS(NS, 'path');
-        seg.setAttribute('class', cls);
-        const sweep = Math.min(r.len, 12);
-        seg.setAttribute('d', arcStroke(radius, r.start, r.start + sweep));
-        svg.appendChild(seg);
-      });
-    }
-    emitArcs(rActual, tHours || [], 'seg-actual');
-    emitArcs(rFelt,   uHours || [], 'seg-felt');
+    // Centre stack — number on top, then "hours" and "too hot to step out"
+    const nHot = (hotHrs || []).length;
+    const unit = nHot === 1 ? 'hour' : 'hours';
 
-    // Centre stack: two lines only — Actual / Felt.
-    // The overall heading "Too hot to step out" is rendered ONCE above the grid.
-    const nT = (tHours || []).length;
-    const nU = (uHours || []).length;
+    const num = document.createElementNS(NS, 'text');
+    num.setAttribute('x', cx); num.setAttribute('y', cy - 4);
+    num.setAttribute('text-anchor', 'middle');
+    num.setAttribute('class', 'clock-count ' + (nHot > 0 ? 'active' : 'zero'));
+    num.textContent = nHot + ' ' + unit;
+    svg.appendChild(num);
 
-    const tAct = document.createElementNS(NS, 'text');
-    tAct.setAttribute('x', cx); tAct.setAttribute('y', cy - 2);
-    tAct.setAttribute('class', 'clock-center-stat actual');
-    tAct.innerHTML =
-      '<tspan class="stat-lbl">Actual: </tspan>' +
-      '<tspan class="stat-val actual">' + nT + '</tspan>' +
-      '<tspan class="stat-lbl"> hrs</tspan>';
-    svg.appendChild(tAct);
+    const l1 = document.createElementNS(NS, 'text');
+    l1.setAttribute('x', cx); l1.setAttribute('y', cy + 14);
+    l1.setAttribute('text-anchor', 'middle');
+    l1.setAttribute('class', 'clock-count-label');
+    l1.textContent = 'too hot to';
+    svg.appendChild(l1);
 
-    const tFelt = document.createElementNS(NS, 'text');
-    tFelt.setAttribute('x', cx); tFelt.setAttribute('y', cy + 16);
-    tFelt.setAttribute('class', 'clock-center-stat felt');
-    tFelt.innerHTML =
-      '<tspan class="stat-lbl">Felt: </tspan>' +
-      '<tspan class="stat-val felt">' + nU + '</tspan>' +
-      '<tspan class="stat-lbl"> hrs</tspan>';
-    svg.appendChild(tFelt);
+    const l2 = document.createElementNS(NS, 'text');
+    l2.setAttribute('x', cx); l2.setAttribute('y', cy + 28);
+    l2.setAttribute('text-anchor', 'middle');
+    l2.setAttribute('class', 'clock-count-label');
+    l2.textContent = 'step out';
+    svg.appendChild(l2);
   }
 
-  // Insight 2 clocks — dual ring, all four cities, per-halfday
+  // ---- Wiring ---------------------------------------------------------------
   const heatWrap = document.getElementById('clocksHeatStretch');
   const halfToggle = document.getElementById('clockHalfdayToggle');
-  const svgs = {};
-  let currentHalf = 'am';   // 'am' = 0..11, 'pm' = 12..23
+  const cityToggle = document.getElementById('clockCityToggle');
+  let currentHalf = 'day';  // 'day' = buckets 7..19 (7:30 AM – 7:30 PM IST), 'night' = rest
+  let currentCity = 'delhi';
 
-  CITIES.forEach(city => {
+  // Build TWO clock cards side-by-side: Recorded (T2M) + Felt (UTCI)
+  function makeCard(kind, labelText) {
     const card = document.createElement('div');
-    card.className = 'clock-card';
+    card.className = 'clock-card ' + kind;
     const title = document.createElement('div');
-    title.className = 'clock-card-title';
-    title.textContent = CITY_DISPLAY[city];
+    title.className = 'clock-card-title ' + kind;
+    title.textContent = labelText;
     card.appendChild(title);
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('class', 'clock-svg');
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     card.appendChild(svg);
     heatWrap.appendChild(card);
-    svgs[city] = svg;
-  });
+    return { card, title, svg };
+  }
+  const recCard  = makeCard('rec',  'Recorded heat');
+  const feltCard = makeCard('felt', 'Felt heat');
+
+  // Caption below the two clocks: names the hottest month for the current city
+  const caption = document.createElement('div');
+  caption.className = 'clocks-caption';
+  heatWrap.parentNode.insertBefore(caption, heatWrap.nextSibling);
 
   function filterHalf(hours, half) {
-    return hours.filter(h => half === 'am' ? h < 12 : h >= 12);
-  }
-
-  function renderAll() {
-    CITIES.forEach(city => {
-      const t = filterHalf(CLOCK[city].t2m_hot,  currentHalf);
-      const u = filterHalf(CLOCK[city].utci_hot, currentHalf);
-      drawDualClock(svgs[city], t, u, currentHalf);
+    // Day window: buckets 7..19 (7:30 AM – 7:30 PM IST). Night: everything else.
+    return hours.filter(h => {
+      const isDay = (h >= 7 && h <= 19);
+      return half === 'day' ? isDay : !isDay;
     });
   }
-  renderAll();
+
+  function renderClock() {
+    const t = filterHalf(hotHours(currentCity, 't2m'),  currentHalf);
+    const u = filterHalf(hotHours(currentCity, 'utci'), currentHalf);
+    drawClock(recCard.svg,  t, 'seg-recorded', currentHalf);
+    drawClock(feltCard.svg, u, 'seg-felt',     currentHalf);
+    const hot = HOT_MONTH[currentCity];
+    caption.textContent =
+      'Hottest month in ' + CITY_DISPLAY[currentCity] + ': ' + hot.name + ' 2024';
+  }
+  renderClock();
 
   halfToggle.addEventListener('click', e => {
     const btn = e.target.closest('button[data-half]');
     if (!btn) return;
     halfToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
     currentHalf = btn.dataset.half;
-    renderAll();
+    renderClock();
   });
 
-  // Legend row under the clock grid
-  const legend = document.createElement('div');
-  legend.className = 'clock-legend-row';
-  legend.innerHTML =
-    '<span><span class="sw actual"></span>Actual (T2M) hours over cutoff on 30+ days</span>' +
-    '<span><span class="sw felt"></span>Feels-like (UTCI) hours over cutoff on 30+ days</span>';
-  heatWrap.parentNode.insertBefore(legend, heatWrap.nextSibling);
+  cityToggle.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-city]');
+    if (!btn) return;
+    cityToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+    currentCity = btn.dataset.city;
+    renderClock();
+  });
+
 });
 
 /* ============ Windows of Comfort — buildings graphic (v9-style) ============ */
@@ -941,7 +1057,7 @@ window.__runWhenDataReady(function () {
     const suffix = h < 12 ? 'AM' : 'PM';
     let display = h % 12;
     if (display === 0) display = 12;
-    clockDigital.innerHTML = String(display).padStart(2, '0') + ':30 <span class="ampm">' + suffix + '</span>';
+    clockDigital.innerHTML = String(display).padStart(2, '0') + ':30<span class="ampm">' + suffix + '</span>';
   }
 
   render();
