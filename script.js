@@ -768,11 +768,14 @@ window.__runWhenDataReady(function () {
     const series = MONTH_MEAN[city][key];
     const out = [];
     // Bucket h corresponds to h:30 IST. Day window is 6:30 AM – 5:30 PM IST → buckets 6..17.
+    // Early-morning slots (6:30 & 7:30 AM) sit on the day dial but use the night cutoff,
+    // since air is still cool post-sunrise but felt heat can already cross discomfort.
     for (let h = 0; h < 24; h++) {
       const v = series[h];
       if (v == null) continue;
       const isDay = (h >= 6 && h <= 17);
-      const cutoff = isDay ? thr.day : thr.night;
+      const useNightCutoff = (h === 6 || h === 7) || !isDay;
+      const cutoff = useNightCutoff ? thr.night : thr.day;
       if (v > cutoff) out.push(h);
     }
     return out;

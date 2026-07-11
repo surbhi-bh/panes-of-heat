@@ -572,7 +572,8 @@
     display: flex; align-items: flex-start; justify-content: space-between;
     flex-wrap: wrap; gap: 20px; margin-bottom: 14px;
   }
-  .panes-controls-left { display: flex; align-items: center; gap: 20px; }
+  .panes-controls-left  { display: flex; align-items: center; gap: 20px; }
+  .panes-controls-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
   .clock-block { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
   .clock-digital {
     font-family: 'IBM Plex Mono', monospace;
@@ -642,7 +643,7 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: 30px 32px;
   }
   /* Desktop: hide the mobile-only toggles */
-  .panes-city-toggle { display: none; }
+  .city-toggle.panes-city-toggle { display: none; }
   .city-toggle.cal-mode-toggle { display: none; }
   @media (max-width: 900px) { .panes-grid { grid-template-columns: 1fr; } }
   .pane-card { display: flex; flex-direction: column; gap: 10px; }
@@ -1931,8 +1932,9 @@
   .phys-feature figcaption {
     margin-top: 12px;
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    color: #6b3f36;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6E1712;
     font-style: italic;
     text-align: center;
   }
@@ -1953,6 +1955,7 @@
 
   /* Methodology — warm cream card, sits after the closing block */
   .methodology-block {
+    position: relative;
     margin: 0 auto;
     max-width: 720px;
     padding: 28px 32px;
@@ -1976,6 +1979,17 @@
     text-underline-offset: 3px;
     word-break: break-word;
   }
+  .methodology-block .back-to-article {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6E1712;
+    text-decoration: none;
+  }
+  .methodology-block .back-to-article:hover { text-decoration: underline; }
   .methodology-block ul {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 15px; line-height: 1.7;
@@ -2384,7 +2398,7 @@
 
     /* ---- Panes / dumbbells: show one city at a time via toggle ---- */
     .panes-section { margin-bottom: 28px; }
-    .panes-city-toggle { display: inline-flex; }
+    .city-toggle.panes-city-toggle { display: inline-flex; }
     .panes-grid { grid-template-columns: 1fr; gap: 0; }
     .panes-grid[data-selected-city] .pane-card { display: none; }
     .panes-grid[data-selected-city="delhi"]   .pane-card:has(.pane-svg[data-city="delhi"])   { display: flex; flex-direction: column; }
