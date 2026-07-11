@@ -767,11 +767,11 @@ window.__runWhenDataReady(function () {
     const thr = CITY_THR[city];
     const series = MONTH_MEAN[city][key];
     const out = [];
-    // Bucket h corresponds to h:30 IST. Day window is 7:30 AM – 7:30 PM IST → buckets 7..19.
+    // Bucket h corresponds to h:30 IST. Day window is 6:30 AM – 5:30 PM IST → buckets 6..17.
     for (let h = 0; h < 24; h++) {
       const v = series[h];
       if (v == null) continue;
-      const isDay = (h >= 7 && h <= 19);
+      const isDay = (h >= 6 && h <= 17);
       const cutoff = isDay ? thr.day : thr.night;
       if (v > cutoff) out.push(h);
     }
@@ -829,20 +829,20 @@ window.__runWhenDataReady(function () {
     }
 
     // Cardinal-position numerals (bucket h renders at ((h%12)/12)*2π - π/2).
-    // Day face runs 7:30 AM → 7:30 PM; night face 7:30 PM → 7:30 AM.
+    // Day face runs 6 AM → 6 PM; night face 6 PM → 6 AM.
     const isDay = (half === 'day');
     const labels = isDay
       ? [
-          { text: '12 PM',  x: 0,  y: -1 },
-          { text: '3 PM',   x: 1,  y:  0 },
-          { text: '6 PM',   x: 0,  y:  1 },
-          { text: '9 AM',   x: -1, y:  0 }
+          { text: '12',    x: 0,  y: -1 },
+          { text: '3 PM',  x: 1,  y:  0 },
+          { text: '6',     x: 0,  y:  1 },
+          { text: '9 AM',  x: -1, y:  0 }
         ]
       : [
-          { text: '12 AM',  x: 0,  y: -1 },
-          { text: '3 AM',   x: 1,  y:  0 },
-          { text: '6 AM',   x: 0,  y:  1 },
-          { text: '9 PM',   x: -1, y:  0 }
+          { text: '12',    x: 0,  y: -1 },
+          { text: '3 AM',  x: 1,  y:  0 },
+          { text: '6',     x: 0,  y:  1 },
+          { text: '9 PM',  x: -1, y:  0 }
         ];
     labels.forEach(pos => {
       const rr = 96;
@@ -854,27 +854,6 @@ window.__runWhenDataReady(function () {
       t.textContent = pos.text;
       svg.appendChild(t);
     });
-
-    // "7" boundary marker — day face marks 7 AM (start of the day window);
-    // night face marks 7 PM (start of the night window). Same angular position
-    // on a 12-hour dial, but labelled to match the face the viewer is on.
-    const boundaryAngle = (7 / 12) * 2 * Math.PI - Math.PI / 2;
-    const bx = Math.cos(boundaryAngle);
-    const by = Math.sin(boundaryAngle);
-    const tick = document.createElementNS(NS, 'line');
-    tick.setAttribute('x1', cx + (r - 6) * bx);
-    tick.setAttribute('y1', cy + (r - 6) * by);
-    tick.setAttribute('x2', cx + (r + 8) * bx);
-    tick.setAttribute('y2', cy + (r + 8) * by);
-    tick.setAttribute('class', 'clock-boundary-tick');
-    svg.appendChild(tick);
-    const bl = document.createElementNS(NS, 'text');
-    bl.setAttribute('x', cx + (r + 18) * bx - 6);
-    bl.setAttribute('y', cy + (r + 18) * by + 3);
-    bl.setAttribute('text-anchor', 'end');
-    bl.setAttribute('class', 'clock-boundary-label');
-    bl.textContent = '7 AM / 7 PM';
-    svg.appendChild(bl);
 
     // Contiguous hot-hour runs on a 24-h loop
     function buildRuns(hotHours) {
@@ -936,7 +915,7 @@ window.__runWhenDataReady(function () {
   const heatWrap = document.getElementById('clocksHeatStretch');
   const halfToggle = document.getElementById('clockHalfdayToggle');
   const cityToggle = document.getElementById('clockCityToggle');
-  let currentHalf = 'day';  // 'day' = buckets 7..19 (7:30 AM – 7:30 PM IST), 'night' = rest
+  let currentHalf = 'day';  // 'day' = buckets 6..17 (6:30 AM – 5:30 PM IST), 'night' = rest
   let currentCity = 'delhi';
 
   // Build TWO clock cards side-by-side: Recorded (T2M) + Felt (UTCI)
@@ -963,9 +942,9 @@ window.__runWhenDataReady(function () {
   heatWrap.parentNode.insertBefore(caption, heatWrap.nextSibling);
 
   function filterHalf(hours, half) {
-    // Day window: buckets 7..19 (7:30 AM – 7:30 PM IST). Night: everything else.
+    // Day window: buckets 6..17 (6:30 AM – 5:30 PM IST). Night: everything else.
     return hours.filter(h => {
-      const isDay = (h >= 7 && h <= 19);
+      const isDay = (h >= 6 && h <= 17);
       return half === 'day' ? isDay : !isDay;
     });
   }

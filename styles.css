@@ -643,7 +643,7 @@
   }
   /* Desktop: hide the mobile-only toggles */
   .panes-city-toggle { display: none; }
-  .cal-mode-toggle { display: none; }
+  .city-toggle.cal-mode-toggle { display: none; }
   @media (max-width: 900px) { .panes-grid { grid-template-columns: 1fr; } }
   .pane-card { display: flex; flex-direction: column; gap: 10px; }
   .pane-card-title {
@@ -1494,12 +1494,19 @@
     color: #161616; letter-spacing: -0.01em;
     margin-bottom: 10px;
   }
-  .phys-step-title::before {
-    content: counter(phys-step-counter) ". ";
-    font-family: 'IBM Plex Mono', monospace;
-    color: #c0382f;
-    font-weight: 500;
-    letter-spacing: 0.02em;
+  .phys-step-title::before { content: none; }
+  .phys-shopping-line {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #6E1712;
+    line-height: 1.25;
+    margin: 28px 0 18px;
+    letter-spacing: -0.01em;
+  }
+  .phys-shopping-line em {
+    font-style: italic;
+    font-weight: 800;
   }
   .phys-step-title .phys-em {
     font-style: italic;
@@ -1764,12 +1771,11 @@
     z-index: 3;
   }
   .phys-materials {
-    background: #f5ede4;
+    background: transparent;
     border: none;
-    padding: 24px 28px;
+    padding: 0;
     margin: 4px 0 26px;
     max-width: 720px;
-    border-radius: 4px;
   }
   .phys-materials-title {
     font-family: 'IBM Plex Sans', sans-serif;
@@ -1839,6 +1845,45 @@
     padding: 0;
   }
   .phys-bom-group li::marker { color: #6E1712; }
+
+  /* Two-column BOM table — full brown grid, no fill */
+  .phys-bom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+    color: #262626;
+    background: transparent;
+  }
+  .phys-bom-table th,
+  .phys-bom-table td {
+    border: 1.5px solid #6E1712;
+    padding: 10px 16px;
+    vertical-align: top;
+    line-height: 1.55;
+    background: transparent;
+  }
+  .phys-bom-table thead th {
+    text-align: left;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    color: #6E1712;
+    font-weight: 600;
+  }
+  .phys-bom-table tbody td:first-child {
+    font-weight: 600;
+    color: #161616;
+    width: 38%;
+  }
+  .phys-bom-link {
+    color: #6E1712;
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: 13px;
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+  .phys-bom-link:hover { text-decoration: none; }
 
   /* Feature figures inside a phys-step — smaller, stacked, centred */
   .phys-feature {
@@ -2314,9 +2359,17 @@
       margin-left: 0;
     }
     .chart-controls-cluster {
-      flex-wrap: wrap;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
       gap: 8px;
     }
+    .chart-controls-cluster .city-toggle {
+      width: 100%;
+      justify-content: stretch;
+    }
+    .chart-controls-cluster .city-toggle button { flex: 1 1 0; }
     .insight-title, .panes-title { font-size: 19px; line-height: 1.2; }
     .insight-subtitle, .panes-subtitle { font-size: 13.5px; line-height: 1.5; }
     .panes-section .panes-subtitle { white-space: normal; }
@@ -2358,7 +2411,12 @@
     /* ---- Calendar on phone ----
        One single card: months as columns across, days flowing top→bottom.
        All 366 days visible without scrolling. */
-    .cal-mode-toggle { display: inline-flex; margin-bottom: 14px; }
+    /* Recorded/Felt toggle: right-aligned on phone */
+    .city-toggle.cal-mode-toggle {
+      display: flex;
+      margin: 0 0 14px auto;
+      width: fit-content;
+    }
     .cal-panel-title { display: none; }
     .cal-grid-2 {
       grid-template-columns: 1fr;
@@ -2478,12 +2536,29 @@
       flex-direction: column-reverse;
       gap: 12px;
     }
-    .phys-thumbs { grid-template-columns: repeat(6, 1fr); }
     .phys-thumbs { grid-template-columns: repeat(4, 1fr); }
     .phys-view { min-height: 300px; }
     .phys-duo-imgs { grid-template-columns: 1fr; }
     .phys-feature { max-width: 100%; }
-    .phys-materials { padding: 18px; }
+    /* Stack side-by-side pairs on phone (one-strip/one-box, built-master/built-3) */
+    .phys-feature-pair {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .phys-feature-pair img { aspect-ratio: auto; }
+
+    /* Materials box on phone: shrink padding + tighten table */
+    .phys-materials { padding: 0; margin: 4px 0 20px; }
+    .phys-materials-title { font-size: 15px; margin-bottom: 10px; }
+    .phys-bom-table { font-size: 13px; }
+    .phys-bom-table th,
+    .phys-bom-table td { padding: 8px 10px; line-height: 1.45; }
+    .phys-bom-table thead th { font-size: 12.5px; }
+    .phys-bom-table tbody td:first-child { width: 42%; }
+    .phys-bom-link { font-size: 12px; display: inline-block; margin-left: 2px; }
+
+    /* Shopping-line headline: smaller on phone so it doesn't dominate */
+    .phys-shopping-line { font-size: 20px; margin: 20px 0 14px; }
 
     /* ---- Closing carousel — reduce card size, faster loop ---- */
     .closing { max-width: 100%; margin: 60px auto 40px; }
