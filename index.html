@@ -653,7 +653,7 @@
                     <td>Diffuses the LED light behind each window so every pane glows evenly.</td>
                   </tr>
                   <tr>
-                    <td>MDF laser-cut body</td>
+                    <td>MDF laser-cut body (3.1&nbsp;mm)</td>
                     <td>Forms the tower structure, the facades, floors, and slotted dividers behind every window.</td>
                   </tr>
                   <tr>
@@ -729,8 +729,8 @@
           <div class="phys-step-body">
             <h4 class="phys-step-title">The Code</h4>
             <p class="phys-step-text">We needed pipeline work to route water and electricity into the buildings (ok, maybe just electricity). Just as pipelines and electrical conduits carry water and power through a building, ours carried data.</p>
-            <p class="phys-step-text">Hourly temperature records travelled from a csv into Arduino code, which was uploaded to an ESP32 microcontroller. The ESP32 acted like the building&rsquo;s electrical panel, distributing instructions to hundreds of NeoPixel LEDs so each window knew exactly when to glow and what colour to become.</p>
-            <p class="phys-step-text">The data pipeline looked like this: Temperature data &rarr; Arduino code &rarr; ESP32 microcontroller &rarr; NeoPixel LEDs &rarr; Window pane.</p>
+            <p class="phys-step-text">Hourly temperature records travelled from a csv into Arduino code, written in C++ using Adafruit libraries for controlling NeoPixel LEDs. The ESP32 acted like the building&rsquo;s electrical panel, distributing instructions to hundreds of NeoPixel LEDs so each window knew exactly when to glow and what colour to become.</p>
+            <p class="phys-step-text">The data pipeline looked like this: Temperature data &rarr; C++ Arduino code &rarr; ESP32 microcontroller &rarr; NeoPixel LEDs &rarr; Window panes.</p>
             <div class="phys-gallery">
               <div class="phys-thumbs" data-target="phys-view-4">
                 <button class="phys-thumb" data-src="assets/electronics-1.jpg" aria-label="Electronics 1"></button>
