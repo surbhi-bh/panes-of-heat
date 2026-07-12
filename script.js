@@ -176,17 +176,7 @@ window.__runWhenDataReady = function(fn){
     .attr('width', x.bandwidth())
     .attr('height', r => Math.abs(y(r.temp) - y(0)))
     .attr('fill', r => r.color)
-    .attr('stroke', '#0000000d').attr('stroke-width', 0.3)
-    .on('mousemove', function (event, r) {
-      const rect = wrapNode.getBoundingClientRect();
-      const px = event.clientX - rect.left + 12;
-      const py = event.clientY - rect.top + 12;
-      const deltaTxt = r.delta === 0 ? '—' : (r.delta > 0 ? '+' : '') + r.delta.toFixed(3) + '°';
-      tooltip.style('left', px + 'px').style('top', py + 'px')
-        .style('opacity', 1)
-        .html(r.year + ' · ' + r.temp.toFixed(3) + '°C<br/>Δ vs prev: ' + deltaTxt);
-    })
-    .on('mouseleave', function () { tooltip.style('opacity', 0); });
+    .attr('stroke', '#0000000d').attr('stroke-width', 0.3);
 })();
 
 /* ============ Panes of Heat — animated dumbbell panel (all cities) ============ */
