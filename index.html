@@ -24,6 +24,9 @@
 <meta name="twitter:image" content="https://surbhi-bh.github.io/panes-of-heat/assets/social-card.jpg">
 
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preload" href="data/panes.json" as="fetch" crossorigin>
+<link rel="preload" href="data/extra.json" as="fetch" crossorigin>
+<link rel="preload" href="data/warming.json" as="fetch" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -329,7 +332,6 @@
         <div id="warmingChartWrap" class="warming-chart-wrap">
           <h3 class="warming-chart-title">Globally, the year 2024 was the hottest on record, crossing the 1.5&nbsp;°C threshold</h3>
           <p class="warming-chart-subtitle">Change in global temperatures since pre-industrial levels</p>
-          <div class="warming-tooltip" id="warmingTooltip"></div>
           <svg id="warmingChart" viewBox="0 0 900 420" preserveAspectRatio="xMidYMid meet"></svg>
           <p class="chart-source">Source: ERA5</p>
         </div>
