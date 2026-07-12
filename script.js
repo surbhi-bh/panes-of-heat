@@ -10,8 +10,8 @@ window.__runWhenDataReady = function(fn){
 };
 (async function preloadData(){
   const [panes, extra] = await Promise.all([
-    fetch('data/panes.json').then(r => r.text()),
-    fetch('data/extra.json').then(r => r.text())
+    fetch('/vizardry/panes-of-heat/data/panes.json').then(r => r.text()),
+    fetch('/vizardry/panes-of-heat/data/extra.json').then(r => r.text())
   ]);
   function inject(id, text){
     const s = document.createElement('script');
@@ -107,7 +107,7 @@ window.__runWhenDataReady = function(fn){
   const tooltip = d3.select('#warmingTooltip');
   if (svg.empty()) return;
   let raw;
-  try { raw = await fetch('data/warming.json').then(r => r.json()); }
+  try { raw = await fetch('/vizardry/panes-of-heat/data/warming.json').then(r => r.json()); }
   catch (e) { console.error('Failed to load warming data:', e); return; }
   const rows = raw
     .map(r => ({ year: r[0], temp: r[1] }))
